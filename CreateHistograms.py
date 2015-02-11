@@ -76,44 +76,49 @@ recoPt1 = "((pT1_reco>1) && (pT2_reco>1))"
 gmtPt1 = "((pT1_GMT>1) && (pT2_GMT>1))"
 recoPt5 = "((pT1_reco>5) && (pT2_reco>5))"
 gmtPt5 = "((pT1_GMT>5) && (pT2_GMT>5))"
-bothDTRPC1 = "(SubsysID_GMT == 0)"
+bothDTRPC = "(SubsysID_GMT == 0)"
 bothDTRPC1 = "(SubsysID1_GMT == 0)"
 bothDTRPC2 = "(SubsysID2_GMT == 0)"
-bothCSCRPC1 = "(SubsysID_GMT == 1)"
+bothCSCRPC = "(SubsysID_GMT == 1)"
 bothCSCRPC1 = "(SubsysID1_GMT == 1)"
 bothCSCRPC2 = "(SubsysID2_GMT == 1)"
-onlyDT1 = "(SubsysID_GMT == 2)"
+onlyDT = "(SubsysID_GMT == 2)"
 onlyDT1 = "(SubsysID1_GMT == 2)"
 onlyDT2 = "(SubsysID2_GMT == 2)"
-onlyCSC1 = "(SubsysID_GMT == 3)"
+onlyCSC = "(SubsysID_GMT == 3)"
 onlyCSC1 = "(SubsysID1_GMT == 3)"
 onlyCSC2 = "(SubsysID2_GMT == 3)"
-onlyRPC1 = "((SubsysID_GMT == 4) || (SubsysID_GMT == 5))"
+onlyRPC = "((SubsysID_GMT == 4) || (SubsysID_GMT == 5))"
 onlyRPC1 = "((SubsysID1_GMT == 4) || (SubsysID1_GMT == 5))"
 onlyRPC2 = "((SubsysID2_GMT == 4) || (SubsysID2_GMT == 5))"
 correctCharges = "(Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)"
-usableCharges = "((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) || ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco))"
+usableCharges = "(((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) || ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco)))"
 
 cutDict = {}
 cutDict["recoPt1"] = [recoPt1, "DiRecoMu1"]
 cutDict["gmtPt1"] = [gmtPt1, "DiGMTMu1"]
 cutDict["recoPt5"] = [recoPt5, "DiRecoMu5"]
 cutDict["gmtPt5"] = [gmtPt5, "DiGMTMu5"]
-cutDict["gmtPt1_cs"] = [gmtPt1 + " && " + correctCharges, "DiGMTMu1_CorrectSign"]
-cutDict["gmtPt1_us"] = [gmtPt1 + " && " + usableCharges, "DiGMTMu1_UsableSign"]
-cutDict["gmtPt5_cs"] = [gmtPt5 + " && " + correctCharges, "DiGMTMu5_CorrectSign"]
-cutDict["gmtPt5_us"] = [gmtPt5 + " && " + usableCharges, "DiGMTMu5_UsableSign"]
+cutDict["gmtPt1_cs"] = ["(" + gmtPt1 + " && " + correctCharges + ")", "DiGMTMu1_CorrectSign"]
+cutDict["gmtPt1_us"] = ["(" + gmtPt1 + " && " + usableCharges + ")", "DiGMTMu1_UsableSign"]
+cutDict["gmtPt5_cs"] = ["(" + gmtPt5 + " && " + correctCharges + ")", "DiGMTMu5_CorrectSign"]
+cutDict["gmtPt5_us"] = ["(" + gmtPt5 + " && " + usableCharges + ")", "DiGMTMu5_UsableSign"]
 
-cutDict["DTRPC1"] = [bothDTRPC1, "ConfirmedDTMu1", 8]
-cutDict["DTRPC2"] = [bothDTRPC2, "ConfirmedDTMu2", 8]
-cutDict["CSCRPC1"] = [bothCSCRPC1, "ConfirmedCSCMu1", 9]
-cutDict["CSCRPC2"] = [bothCSCRPC2, "ConfirmedCSCMu2", 9]
-cutDict["DT1"] = [onlyDT1, "DTMu1", 30]
-cutDict["DT2"] = [onlyDT2, "DTMu2", 30]
-cutDict["CSC1"] = [onlyCSC1, "CSCMu1", 40]
-cutDict["CSC2"] = [onlyCSC2, "CSCMu2", 40]
-cutDict["RPC1"] = [onlyRPC1, "RPCMu1", 46]
-cutDict["RPC2"] = [onlyRPC2, "RPCMu2", 46]
+cutDict["DTRPC"] = [bothDTRPC1, "DT+RPC", 8]
+cutDict["DTRPC1"] = [bothDTRPC1, "DT+RPC", 8]
+cutDict["DTRPC2"] = [bothDTRPC2, "DT+RPC", 8]
+cutDict["CSCRPC"] = [bothCSCRPC1, "CSC+RPC", 9]
+cutDict["CSCRPC1"] = [bothCSCRPC1, "CSC+RPC", 9]
+cutDict["CSCRPC2"] = [bothCSCRPC2, "CSC+RPC", 9]
+cutDict["DT"] = [onlyDT1, "DT", 30]
+cutDict["DT1"] = [onlyDT1, "DT", 30]
+cutDict["DT2"] = [onlyDT2, "DT", 30]
+cutDict["CSC"] = [onlyCSC1, "CSC", 40]
+cutDict["CSC1"] = [onlyCSC1, "CSC", 40]
+cutDict["CSC2"] = [onlyCSC2, "CSC", 40]
+cutDict["RPC"] = [onlyRPC1, "RPC", 46]
+cutDict["RPC1"] = [onlyRPC1, "RPC", 46]
+cutDict["RPC2"] = [onlyRPC2, "RPC", 46]
 
 stackCutDict = {}
 stackCutDict["subsystems_mu"] = [cutDict["DTRPC"], cutDict["CSCRPC"], cutDict["DT"], cutDict["CSC"], cutDict["RPC"]]
