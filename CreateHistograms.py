@@ -8,8 +8,45 @@ from ROOT import *
 # 4: variables to plot
 # 5: physical cuts on GMT muons
 # 6: physical cuts on reco (and GMT) muons
-# 7: list of 'cuts' for each component of stack (optional, used for subsystem separation)
 def generateEfficiencyHist(varList, dataset=""):
+    gStyle.SetOptStat(0);
+    legend = TLegend(0.70,0.5,0.95,0.8);
+
+    # Create descriptive strings
+    descrWspaces = " - " + varList[5][1] + ", "
+    descrWOspaces = "_"+varList[5][1] + "_"
+    canvasTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[6][1]
+    stackTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[6][1]
+
+    # Create cut string
+    cutString = [varList[5][1], varList[5][0] + " && " + varList[6][0], 0]
+
+    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
+    efficiencyHist = TH1D("efficiencyHist", cutString[0], varList[1], varList[2], varList[3])
+    efficiencyHist.Sumw2()
+    tmpHist = TH1D("tmpHist", "", varList[1], varList[2], varList[3])
+    tmpHist.Sumw2()
+    ntuple.Project("tmpHist", varList[4], varList[6][0])
+    ntuple.Project("efficiencyHist", varList[4], cutString[1])
+
+    efficiencyHist.Divide(efficiencyHist, tmpHist, 1.0, 1.0, "B")
+    efficiencyHist.Draw("E1")
+    c1.Update()
+
+    if dataset != "":
+        dataset += "_"
+    filename = "plots/hist_eff_" + dataset + varList[0] + descrWOspaces + varList[6][1] + ".pdf"
+
+    c1.Print(filename, "pdf")
+
+## varlist entries:
+# 0: descriptive string used for caption and filename (what is plotted)
+# 1-3: binning
+# 4: variables to plot
+# 5: physical cuts on GMT muons
+# 6: physical cuts on reco (and GMT) muons
+# 7: list of 'cuts' for each component of stack
+def generateEfficiencyStack(varList, dataset=""):
     gStyle.SetOptStat(0);
     legend = TLegend(0.70,0.5,0.95,0.8);
 
@@ -30,15 +67,12 @@ def generateEfficiencyHist(varList, dataset=""):
         descr = effCutDict[1]
         cut = effCutDict[0] + " && " + varList[5][0] + " && " + varList[6][0]
         cutStrings.append([descr, cut, effCutDict[2]])
-    if len(varList[7]) == 0:
-        cutStrings.append([varList[5][1], varList[5][0] + " && " + varList[6][0], 0])
-        filenameMod = ""
-    else:
-        filenameMod = "stack_"
+
+
 
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist_eff_" + dataset + filenameMod + varList[0] + descrWOspaces + varList[6][1] + ".pdf"
+    filename = "plots/hist_eff_" + dataset + "stack_" + varList[0] + descrWOspaces + varList[6][1] + ".pdf"
 
     for cutString in cutStrings:
         efficiencyHist = TH1D("effHist", cutString[0], varList[1], varList[2], varList[3])
@@ -48,8 +82,7 @@ def generateEfficiencyHist(varList, dataset=""):
         histStack.Add(efficiencyHist)
         legend.AddEntry(efficiencyHist, cutString[0], "F")
     histStack.Draw()
-    if len(varList[7]) > 0:
-        legend.Draw("")
+    legend.Draw("")
     c1.Update()
     c1.Print(filename, "pdf")
 
@@ -71,7 +104,7 @@ def generateRateHist(varList, dataset = ""):
         dataset += "_"
     filename = "plots/hist_rate_" + dataset + varList[0] + "_" + varList[5][1] + ".pdf"
     c1.Print(filename, "pdf")
-    
+
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1-3: Binning for first variable
