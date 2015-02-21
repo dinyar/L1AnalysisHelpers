@@ -16,21 +16,28 @@ def generateEfficiencyHist(varList, dataset=""):
     descrWspaces = " - " + varList[5][1] + ", "
     descrWOspaces = "_"+varList[5][1] + "_"
     canvasTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[6][1]
-    stackTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[6][1]
+    histTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[6][1]
 
     # Create cut string
     cutString = [varList[5][1], varList[5][0] + " && " + varList[6][0], 0]
 
     c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-    efficiencyHist = TH1D("efficiencyHist", cutString[0], varList[1], varList[2], varList[3])
-    efficiencyHist.Sumw2()
+    passHist = TH1D("passHist", cutString[0], varList[1], varList[2], varList[3])
+    passHist.Sumw2()
     tmpHist = TH1D("tmpHist", "", varList[1], varList[2], varList[3])
     tmpHist.Sumw2()
     ntuple.Project("tmpHist", varList[4], varList[6][0])
-    ntuple.Project("efficiencyHist", varList[4], cutString[1])
+    ntuple.Project("passHist", varList[4], cutString[1])
 
-    efficiencyHist.Divide(efficiencyHist, tmpHist, 1.0, 1.0, "B")
-    efficiencyHist.Draw("E1")
+    # efficiencyGraph = TGraphAsymmErrors()
+    efficiencyHist = TH1D("passHist", histTitle, varList[1], varList[2], varList[3])
+    efficiencyHist.Divide(passHist, tmpHist, 1.0, 1.0, "B")
+    efficiencyHist.SetMinimum(0)
+    efficiencyHist.SetMaximum(1)
+    # efficiencyGraph.Divide(passHist, tmpHist)
+    efficiencyHist.Draw("hist")
+    efficiencyHist.Draw("E1,SAME")
+    # efficiencyGraph.Draw("p,SAME")
     c1.Update()
 
     if dataset != "":
