@@ -167,10 +167,14 @@ def generate2DRateHist(varList, dataset = ""):
 #     etaScale[32+i] = etaScalePos[i+1]
 # etaScale[31]=0;
 
-recoPt1 = "((pT1_reco>1) && (pT2_reco>1))"
-gmtPt1 = "((pT1_GMT>1) && (pT2_GMT>1))"
-recoPt5 = "((pT1_reco>5) && (pT2_reco>5))"
-gmtPt5 = "((pT1_GMT>5) && (pT2_GMT>5))"
+recoPt1 = "(pT_reco>1)"
+gmtPt1 = "(pT_GMT>1)"
+recoPt5 = "(pT_reco>5)"
+gmtPt5 = "(pT_GMT>5)"
+diMu_recoPt1 = "((pT1_reco>1) && (pT2_reco>1))"
+diMu_gmtPt1 = "((pT1_GMT>1) && (pT2_GMT>1))"
+diMu_recoPt5 = "((pT1_reco>5) && (pT2_reco>5))"
+diMu_gmtPt5 = "((pT1_GMT>5) && (pT2_GMT>5))"
 bothDTRPC = "(SubsysID_GMT == 0)"
 bothDTRPC1 = "(SubsysID1_GMT == 0)"
 bothDTRPC2 = "(SubsysID2_GMT == 0)"
@@ -190,14 +194,18 @@ correctCharges = "(Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)"
 usableCharges = "(((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) || ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco)))"
 
 cutDict = {}
-cutDict["recoPt1"] = [recoPt1, "DiRecoMu1"]
-cutDict["gmtPt1"] = [gmtPt1, "DiGMTMu1"]
-cutDict["recoPt5"] = [recoPt5, "DiRecoMu5"]
-cutDict["gmtPt5"] = [gmtPt5, "DiGMTMu5"]
-cutDict["gmtPt1_cs"] = ["(" + gmtPt1 + " && " + correctCharges + ")", "DiGMTMu1_CorrectSign"]
-cutDict["gmtPt1_us"] = ["(" + gmtPt1 + " && " + usableCharges + ")", "DiGMTMu1_UsableSign"]
-cutDict["gmtPt5_cs"] = ["(" + gmtPt5 + " && " + correctCharges + ")", "DiGMTMu5_CorrectSign"]
-cutDict["gmtPt5_us"] = ["(" + gmtPt5 + " && " + usableCharges + ")", "DiGMTMu5_UsableSign"]
+cutDict["recoPt1"] = [recoPt1, "RecoMu1"]
+cutDict["gmtPt1"] = [gmtPt1, "GMTMu1"]
+cutDict["recoPt5"] = [recoPt5, "RecoMu5"]
+cutDict["gmtPt5"] = [gmtPt5, "GMTMu5"]
+cutDict["diMu-recoPt1"] = [diMu_recoPt1, "DiRecoMu1"]
+cutDict["diMu-gmtPt1"] = [diMu_gmtPt1, "DiGMTMu1"]
+cutDict["diMu-recoPt5"] = [diMu_recoPt5, "DiRecoMu5"]
+cutDict["diMu-gmtPt5"] = [diMu_gmtPt5, "DiGMTMu5"]
+cutDict["diMu-gmtPt1_cs"] = ["(" + diMu_gmtPt1 + " && " + correctCharges + ")", "DiGMTMu1_CorrectSign"]
+cutDict["diMu-gmtPt1_us"] = ["(" + diMu_gmtPt1 + " && " + usableCharges + ")", "DiGMTMu1_UsableSign"]
+cutDict["diMu-gmtPt5_cs"] = ["(" + diMu_gmtPt5 + " && " + correctCharges + ")", "DiGMTMu5_CorrectSign"]
+cutDict["diMu-gmtPt5_us"] = ["(" + diMu_gmtPt5 + " && " + usableCharges + ")", "DiGMTMu5_UsableSign"]
 
 cutDict["DTRPC"] = [bothDTRPC1, "DT+RPC", 8]
 cutDict["DTRPC1"] = [bothDTRPC1, "DT+RPC", 8]
