@@ -58,7 +58,6 @@ def generateEfficiencyHist(varList, dataset=""):
 # 7: list of 'cuts' for each component of stack
 def generateEfficiencyStack(varList, dataset=""):
     gStyle.SetOptStat(0);
-    # legend = TLegend(0.70,0.5,0.95,0.8);
     legend = TLegend(0.85,0.70,0.99,0.99);
 
     # Create descriptive strings
@@ -74,12 +73,10 @@ def generateEfficiencyStack(varList, dataset=""):
 
     # Create cut strings
     cutStrings = []
-    for effCutDict in varList[7]:
-        descr = effCutDict[1]
-        cut = effCutDict[0] + " && " + varList[5][0] + " && " + varList[6][0]
-        cutStrings.append([descr, cut, effCutDict[2]])
-
-
+    for compCutDict in varList[7]:
+        descr = compCutDict[1]
+        cut = compCutDict[0] + " && " + varList[5][0] + " && " + varList[6][0]
+        cutStrings.append([descr, cut, compCutDict[2]])
 
     if dataset != "":
         dataset += "_"
@@ -102,7 +99,6 @@ def generateEfficiencyStack(varList, dataset=""):
 # 1-3: binning
 # 4: variables to plot
 # 5: physical cuts
-# TODO: 7: list of 'cuts' for each component of stack (optional, used for subsystem separation)
 def generateRateHist(varList, dataset = ""):
     gStyle.SetOptStat(110011);
     c1 = TCanvas('c1', "Rate of " + varList[0] + " - " + varList[5][1], 200, 10, 700, 500)
@@ -114,6 +110,46 @@ def generateRateHist(varList, dataset = ""):
     if dataset != "":
         dataset += "_"
     filename = "plots/hist_rate_" + dataset + varList[0] + "_" + varList[5][1] + ".pdf"
+    c1.Print(filename, "pdf")
+
+## varlist entries:
+# 0: descriptive string used for caption and filename (what is plotted)
+# 1-3: binning
+# 4: variables to plot
+# 5: physical cuts
+# 6: list of 'cuts' for each component of stack (optional, used for subsystem separation)
+def generateRateStack(varList, dataset = ""):
+    gStyle.SetOptStat(110011);
+    legend = TLegend(0.85,0.70,0.99,0.99);
+
+    # Create descriptive strings
+    descrWspaces = " - " + varList[5][1]
+    descrWOspaces = "_"+varList[5][1]
+    title = "Rate of " + varList[0] + descrWspaces
+
+    c1 = TCanvas('c1', title, 200, 10, 700, 500)
+    histStack = THStack("histStack", title + ";" + varList[0] + ";Events")
+
+    # Create cut strings
+    cutStrings = []
+    for compCutDict in varList[6]:
+        descr = compCutDict[1]
+        cut = compCutDict[0] + " && " + varList[5][0]
+        cutStrings.append([descr, cut, compCutDict[2]])
+
+    if dataset != "":
+        dataset += "_"
+    filename = "plots/hist_rate_" + dataset + "stack_" + varList[0] + descrWOspaces + ".pdf"
+
+    for cutString in cutStrings:
+        rateHist = TH1D("rateHist", cutString[0], varList[1], varList[2], varList[3])
+        ntuple.Project("rateHist", varList[4], cutString[1])
+        rateHist.SetFillColor(cutString[2])
+        histStack.Add(rateHist)
+        legend.AddEntry(rateHist, cutString[0], "F")
+    histStack.Draw()
+    legend.Draw("")
+    c1.Update()
     c1.Print(filename, "pdf")
 
 ## varlist entries:
