@@ -29,15 +29,18 @@ def generateEfficiencyHist(varList, dataset=""):
     ntuple.Project("tmpHist", varList[4], varList[6][0])
     ntuple.Project("passHist", varList[4], cutString[1])
 
-    # efficiencyGraph = TGraphAsymmErrors()
+    efficiencyGraph = TGraphAsymmErrors()
     efficiencyHist = TH1D("passHist", histTitle, varList[1], varList[2], varList[3])
-    efficiencyHist.Divide(passHist, tmpHist, 1.0, 1.0, "B")
+    efficiencyHist.Divide(passHist, tmpHist, 1.0, 1.0)
     efficiencyHist.SetMinimum(0)
     efficiencyHist.SetMaximum(1)
-    # efficiencyGraph.Divide(passHist, tmpHist)
+    efficiencyGraph.Divide(passHist, tmpHist)
     efficiencyHist.Draw("hist")
-    efficiencyHist.Draw("E1,SAME")
-    # efficiencyGraph.Draw("p,SAME")
+    # efficiencyHist.Draw("E1,SAME")
+    efficiencyGraph.SetLineColor(38)
+    efficiencyGraph.SetMarkerColor(38)
+    efficiencyGraph.Draw("p,SAME")
+    efficiencyHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
     c1.Update()
 
     if dataset != "":
@@ -55,7 +58,8 @@ def generateEfficiencyHist(varList, dataset=""):
 # 7: list of 'cuts' for each component of stack
 def generateEfficiencyStack(varList, dataset=""):
     gStyle.SetOptStat(0);
-    legend = TLegend(0.70,0.5,0.95,0.8);
+    # legend = TLegend(0.70,0.5,0.95,0.8);
+    legend = TLegend(0.85,0.70,0.99,0.99);
 
     # Create descriptive strings
     descrWspaces = " - " + varList[5][1] + ", "
@@ -167,31 +171,34 @@ def generate2DRateHist(varList, dataset = ""):
 #     etaScale[32+i] = etaScalePos[i+1]
 # etaScale[31]=0;
 
-recoPt1 = "(pT_reco>1)"
-gmtPt1 = "(pT_GMT>1)"
-recoPt5 = "(pT_reco>5)"
-gmtPt5 = "(pT_GMT>5)"
-diMu_recoPt1 = "((pT1_reco>1) && (pT2_reco>1))"
-diMu_gmtPt1 = "((pT1_GMT>1) && (pT2_GMT>1))"
-diMu_recoPt5 = "((pT1_reco>5) && (pT2_reco>5))"
-diMu_gmtPt5 = "((pT1_GMT>5) && (pT2_GMT>5))"
-bothDTRPC = "(SubsysID_GMT == 0)"
-bothDTRPC1 = "(SubsysID1_GMT == 0)"
-bothDTRPC2 = "(SubsysID2_GMT == 0)"
-bothCSCRPC = "(SubsysID_GMT == 1)"
-bothCSCRPC1 = "(SubsysID1_GMT == 1)"
-bothCSCRPC2 = "(SubsysID2_GMT == 1)"
-onlyDT = "(SubsysID_GMT == 2)"
-onlyDT1 = "(SubsysID1_GMT == 2)"
-onlyDT2 = "(SubsysID2_GMT == 2)"
-onlyCSC = "(SubsysID_GMT == 3)"
-onlyCSC1 = "(SubsysID1_GMT == 3)"
-onlyCSC2 = "(SubsysID2_GMT == 3)"
-onlyRPC = "((SubsysID_GMT == 4) || (SubsysID_GMT == 5))"
-onlyRPC1 = "((SubsysID1_GMT == 4) || (SubsysID1_GMT == 5))"
-onlyRPC2 = "((SubsysID2_GMT == 4) || (SubsysID2_GMT == 5))"
-correctCharges = "(Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)"
-usableCharges = "(((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) || ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco)))"
+recoPt1            = "(pT_reco>1)"
+gmtPt1             = "(pT_GMT>1)"
+recoPt5            = "(pT_reco>5)"
+gmtPt5             = "(pT_GMT>5)"
+diMu_recoPt1       = "((pT1_reco>1) && (pT2_reco>1))"
+diMu_gmtPt1        = "((pT1_GMT>1) && (pT2_GMT>1))"
+diMu_recoPt5       = "((pT1_reco>5) && (pT2_reco>5))"
+diMu_gmtPt5        = "((pT1_GMT>5) && (pT2_GMT>5))"
+bothDTRPC          = "(SubsysID_GMT == 0)"
+bothDTRPC1         = "(SubsysID1_GMT == 0)"
+bothDTRPC2         = "(SubsysID2_GMT == 0)"
+bothCSCRPC         = "(SubsysID_GMT == 1)"
+bothCSCRPC1        = "(SubsysID1_GMT == 1)"
+bothCSCRPC2        = "(SubsysID2_GMT == 1)"
+onlyDT             = "(SubsysID_GMT == 2)"
+onlyDT1            = "(SubsysID1_GMT == 2)"
+onlyDT2            = "(SubsysID2_GMT == 2)"
+onlyCSC            = "(SubsysID_GMT == 3)"
+onlyCSC1           = "(SubsysID1_GMT == 3)"
+onlyCSC2           = "(SubsysID2_GMT == 3)"
+onlyRPC            = "((SubsysID_GMT == 4) || (SubsysID_GMT == 5))"
+onlyRPC1           = "((SubsysID1_GMT == 4) || (SubsysID1_GMT == 5))"
+onlyRPC2           = "((SubsysID2_GMT == 4) || (SubsysID2_GMT == 5))"
+correctCharges     = "(Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)"
+usableCharges      = "(((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) || ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco)))"
+diMu_barrelRegion  = "((abs(Eta1_reco) <= 0.8) && (abs(Eta2_reco) < 0.8))"
+diMu_overlapRegion = "((abs(Eta1_reco) > 0.8) && (abs(Eta1_reco) < 1.3) && (abs(Eta2_reco) > 0.8) && (abs(Eta2_reco) < 1.3))"
+diMu_forwardRegion = "((abs(Eta1_reco) => 1.3) && (abs(Eta2_reco) => 1.3))"
 
 cutDict = {}
 cutDict["recoPt1"] = [recoPt1, "RecoMu1"]
@@ -202,10 +209,18 @@ cutDict["diMu-recoPt1"] = [diMu_recoPt1, "DiRecoMu1"]
 cutDict["diMu-gmtPt1"] = [diMu_gmtPt1, "DiGMTMu1"]
 cutDict["diMu-recoPt5"] = [diMu_recoPt5, "DiRecoMu5"]
 cutDict["diMu-gmtPt5"] = [diMu_gmtPt5, "DiGMTMu5"]
+
 cutDict["diMu-gmtPt1_cs"] = ["(" + diMu_gmtPt1 + " && " + correctCharges + ")", "DiGMTMu1_CorrectSign"]
 cutDict["diMu-gmtPt1_us"] = ["(" + diMu_gmtPt1 + " && " + usableCharges + ")", "DiGMTMu1_UsableSign"]
 cutDict["diMu-gmtPt5_cs"] = ["(" + diMu_gmtPt5 + " && " + correctCharges + ")", "DiGMTMu5_CorrectSign"]
 cutDict["diMu-gmtPt5_us"] = ["(" + diMu_gmtPt5 + " && " + usableCharges + ")", "DiGMTMu5_UsableSign"]
+
+cutDict["diMu-recoPt5-brl"] = ["(" + diMu_recoPt5 + " && " + diMu_barrelRegion + ")", "DiGMTMu5_BarrelRegion"]
+cutDict["diMu-recoPt5-ovl"] = ["(" + diMu_recoPt5 + " && " + diMu_overlapRegion + ")", "DiGMTMu5_OverlapRegion"]
+cutDict["diMu-recoPt5-fwd"] = ["(" + diMu_recoPt5 + " && " + diMu_forwardRegion + ")", "DiGMTMu5_ForwardRegion"]
+cutDict["diMu-recoPt5-brl"] = ["(" + diMu_recoPt5 + " && " + diMu_barrelRegion + ")", "DiGMTMu5_BarrelRegion"]
+cutDict["diMu-recoPt5-ovl"] = ["(" + diMu_recoPt5 + " && " + diMu_overlapRegion + ")", "DiGMTMu5_OverlapRegion"]
+cutDict["diMu-recoPt5-fwd"] = ["(" + diMu_recoPt5 + " && " + diMu_forwardRegion + ")", "DiGMTMu5_ForwardRegion"]
 
 cutDict["DTRPC"] = [bothDTRPC1, "DT+RPC", 8]
 cutDict["DTRPC1"] = [bothDTRPC1, "DT+RPC", 8]
