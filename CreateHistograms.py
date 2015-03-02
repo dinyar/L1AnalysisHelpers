@@ -9,8 +9,8 @@ from ROOT import *
 # 3: physical cuts on GMT muons
 # 4: physical cuts on reco (and GMT) muons
 # (optional) 5: Range of y-axis
-def generateGhostPercHist(varList, dataset=""):
-    generateEffOrPercHist(varList, dataset, ["Probability for Ghosts vs. ", "ghost"])
+def generateGhostPercHist(varList, ntuple_file, dataset=""):
+    generateEffOrPercHist(varList, dataset, ["Probability for Ghosts", "ghost"], ntuple_file)
 
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -19,10 +19,10 @@ def generateGhostPercHist(varList, dataset=""):
 # 3: physical cuts on GMT muons
 # 4: physical cuts on reco (and GMT) muons
 # (optional) 5: Range of y-axis
-def generateEfficiencyHist(varList, dataset=""):
-    generateEffOrPercHist(varList, dataset, ["Efficiency vs. ", "eff"])
+def generateEfficiencyHist(varList, ntuple_file, dataset=""):
+    generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_file, dataset=dataset)
 
-def generateEffOrPercHist(varList, dataset, typeStrings):
+def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="", dataset="", datasetMC=""):
     if len(varList) < 6:
         minYAxis = 0
         maxYAxis = 1
@@ -32,11 +32,15 @@ def generateEffOrPercHist(varList, dataset, typeStrings):
 
     gStyle.SetOptStat(0)
 
+    # Get ntuple
+    f = TFile.Open(ntuple_file)
+    ntuple = f.Get("ntuple")
+
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1] + ", "
     descrWOspaces = "_"+varList[3][1] + "_"
-    canvasTitle = typeStrings[0] + varList[0] + descrWspaces + varList[4][1]
-    histTitle = typeStrings[0] + varList[0] + descrWspaces + varList[4][1]
+    canvasTitle = typeStrings[0] + " vs. " + varList[0] + descrWspaces + varList[4][1]
+    histTitle = typeStrings[0] + " vs. " + varList[0] + descrWspaces + varList[4][1]
 
     # Create cut string
     cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
@@ -54,17 +58,57 @@ def generateEffOrPercHist(varList, dataset, typeStrings):
     finHist.SetMinimum(minYAxis)
     finHist.SetMaximum(maxYAxis)
     finGraph.Divide(passHist, tmpHist)
+    finHist.GetXaxis().SetTitle(varList[0])
+    finHist.GetYaxis().SetTitle(typeStrings[0])
     finHist.Draw("hist")
     # passHist.Draw("E1,SAME")
     finGraph.SetLineColor(38)
     finGraph.SetMarkerColor(38)
     finGraph.Draw("p,SAME")
     finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
+
+    if ntupleMC_file != "":
+        # Get ntuple
+        f = TFile.Open(ntupleMC_file)
+        ntuple = f.Get("ntuple")
+        tmpHistMC = TH1D("tmpHistMC", "", varList[1][0], varList[1][1], varList[1][2])
+        passHistMC = TH1D("passHistMC", cutString[0], varList[1][0], varList[1][1], varList[1][2])
+        tmpHistMC.Sumw2()
+        ntuple.Project("tmpHistMC", varList[2], varList[4][0])
+        ntuple.Project("passHistMC", varList[2], cutString[1])
+
+        finGraphMC = TGraphAsymmErrors()
+        finHistMC = TH1D("finHistMC", histTitle, varList[1][0], varList[1][1], varList[1][2])
+        finHistMC.Divide(passHistMC, tmpHistMC, 1.0, 1.0)
+        finHistMC.SetMinimum(minYAxis)
+        finHistMC.SetMaximum(maxYAxis)
+        finGraphMC.Divide(passHistMC, tmpHistMC)
+        finHistMC.SetLineColor(kRed)
+        # finHistMC.Draw("HistMC, SAME")
+        # passHistMC.Draw("E1,SAME")
+        finGraphMC.SetLineColor(46)
+        finGraphMC.SetMarkerColor(46)
+        finGraphMC.Draw("p,SAME")
+        finHistMC.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
+
+        legend = TLegend(0.55,0.1,0.9,0.2)
+        # legend.SetFillStyle(kWhite)
+        legend.AddEntry(finHist, dataset, "L")
+        legend.AddEntry(finHistMC, datasetMC, "L")
+        legend.Draw()
+
+        combString = "combined_"
+    else:
+        combString = ""
+
     c1.Update()
 
-    if dataset != "":
+    if (dataset != "") and (dataset != "Data"):
         dataset += "_"
-    filename = "plots/hist_" + typeStrings[1] + "_" + dataset + varList[0] +\
+
+    if (datasetMC != "") and (datasetMC != "MC"):
+        datasetMC += "_"
+    filename = "plots/hist_" + combString + typeStrings[1] + "_" + dataset + datasetMC + varList[0] +\
         descrWOspaces + varList[4][1] + ".pdf"
 
     c1.Print(filename, "pdf")
@@ -77,7 +121,7 @@ def generateEffOrPercHist(varList, dataset, typeStrings):
 # 4: physical cuts on reco (and GMT) muons
 # 5: list of 'cuts' for each component of stack
 # (optional) 6: Range of y-axis
-def generateEfficiencyStack(varList, dataset=""):
+def generateEfficiencyStack(varList, ntuple_file, dataset=""):
     if len(varList) < 7:
         minYAxis = 0
         maxYAxis = 1
@@ -87,6 +131,10 @@ def generateEfficiencyStack(varList, dataset=""):
 
     gStyle.SetOptStat(0)
     legend = TLegend(0.85,0.70,0.99,0.99)
+
+    # Get ntuple
+    f = TFile.Open(ntuple_file)
+    ntuple = f.Get("ntuple")
 
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1] + ", "
@@ -129,17 +177,49 @@ def generateEfficiencyStack(varList, dataset=""):
 # 1: binning
 # 2: variables to plot
 # 3: physical cuts
-def generateRateHist(varList, dataset = ""):
-    gStyle.SetOptStat(110011);
+def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset = "", datasetMC = ""):
+    if ntupleMC_file == "":
+        gStyle.SetOptStat(110011)
+    else:
+        gStyle.SetOptStat(0)
+
+    # Get ntuple
+    f = TFile.Open(ntuple_file)
+    ntuple = f.Get("ntuple")
+
     c1 = TCanvas('c1', "Rate of " + varList[0] + " - " + varList[3][1], 200, 10, 700, 500)
     rateHist = TH1D("rateHist", "Rate of " + varList[0] + " - " + varList[3][1], varList[1][0], varList[1][1], varList[1][2])
     ntuple.Project("rateHist", varList[2], varList[3][0])
     rateHist.GetXaxis().SetTitle(varList[0])
-    rateHist.DrawCopy()
+    rateHist.Draw("hist")
+
+    if ntupleMC_file != "":
+        # Get ntuple
+        fMC = TFile.Open(ntupleMC_file)
+        ntuple = fMC.Get("ntuple")
+
+        rateHistMC = TH1D("rateHistMC", "Rate vs. " + varList[0] + " - " + varList[3][1], varList[1][0], varList[1][1], varList[1][2])
+        ntuple.Project("rateHistMC", varList[2], varList[3][0])
+        rateHistMC.GetXaxis().SetTitle(varList[0])
+        rateHistMC.SetLineColor(kRed)
+        rateHistMC.Draw("hist,SAME")
+
+        legend = TLegend(0.55,0.8,0.9,0.9)
+        legend.SetFillStyle(0)
+        legend.AddEntry(rateHist, dataset, "L")
+        legend.AddEntry(rateHistMC, datasetMC, "L")
+        legend.Draw("")
+
+        combString = "combined_"
+    else:
+        combString = ""
+
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist_rate_" + dataset + varList[0] + "_" + varList[3][1] + ".pdf"
+    if datasetMC != "":
+        datasetMC += "_"
+    filename = "plots/hist_rate_" + combString + dataset + datasetMC + varList[0] + "_" + varList[3][1] + ".pdf"
     c1.Print(filename, "pdf")
 
 ## varlist entries:
@@ -148,9 +228,13 @@ def generateRateHist(varList, dataset = ""):
 # 2: variables to plot
 # 3: physical cuts
 # 4: list of 'cuts' for each component of stack (optional, used for subsystem separation)
-def generateRateStack(varList, dataset = ""):
+def generateRateStack(varList, ntuple_file, dataset = ""):
     gStyle.SetOptStat(110011);
     legend = TLegend(0.85,0.70,0.99,0.99);
+
+    # Get ntuple
+    f = TFile.Open(ntuple_file)
+    ntuple = f.Get("ntuple")
 
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1]
@@ -189,8 +273,13 @@ def generateRateStack(varList, dataset = ""):
 # 3: Variables to plot (in the form x2:x1) (!)
 # 4: physical cuts on GMT muons
 # 5: physical cuts on reco (and GMT) muons
-def generate2DEfficiencyHist(varList, dataset = ""):
+def generate2DEfficiencyHist(varList, ntuple_file, dataset = ""):
     gStyle.SetOptStat(0)
+
+    # Get ntuple
+    f = TFile.Open(ntuple_file)
+    ntuple = f.Get("ntuple")
+
     descrWspaces = " - " + varList[4][1] + ", "
     descrWOspaces = "_"+varList[4][1] + "_"
     c1 = TCanvas('c1', "Efficiency vs. " + varList[0] + descrWspaces + varList[5][1], 200, 10, 700, 500)
@@ -215,8 +304,13 @@ def generate2DEfficiencyHist(varList, dataset = ""):
 # 2: Binning for second variable
 # 3: Variables to plot (in the form x1:x2)
 # 4: physical cuts
-def generate2DRateHist(varList, dataset = ""):
+def generate2DRateHist(varList, ntuple_file, dataset = ""):
     gStyle.SetOptStat(110011);
+
+    # Get ntuple
+    f = TFile.Open(ntuple_file)
+    ntuple = f.Get("ntuple")
+
     c1 = TCanvas('c1', "Rate of " + varList[0] + " - " + varList[4][1], 200, 10, 700, 500)
     rateHist = TH2D("rateHist", varList[0] + " - " + varList[4][1], varList[1][0], varList[1][1], varList[1][2], varList[2][0], varList[2][1], varList[2][2])
     ntuple.Project("rateHist", varList[3], varList[4][0])
@@ -229,6 +323,34 @@ def generate2DRateHist(varList, dataset = ""):
         dataset += "_"
     filename = "plots/hist2D_rate_" + dataset + varList[0] + "_" + varList[4][1] + ".pdf"
     c1.Print(filename, "pdf")
+
+## varlist entries:
+# 0: descriptive string used for caption and filename (what is plotted)
+# 1: binning
+# 2: variables to plot
+# 3: physical cuts on GMT muons
+# 4: physical cuts on reco (and GMT) muons
+# (optional) 5: Range of y-axis
+def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file, dataset=""):
+    generateEffOrPercHist(varList, ["Probability for Ghosts vs. ", "ghost"], ntuple_file, ntupleMC_file, dataset, datasetMC)
+
+## varlist entries:
+# 0: descriptive string used for caption and filename (what is plotted)
+# 1: binning
+# 2: variables to plot
+# 3: physical cuts on GMT muons
+# 4: physical cuts on reco (and GMT) muons
+# (optional) 5: Range of y-axis
+def generateCombinedEfficiencyHist(varList, ntuple_file, ntupleMC_file, dataset="Data", datasetMC="MC"):
+    generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_file, ntupleMC_file, dataset, datasetMC)
+
+## varlist entries:
+# 0: descriptive string used for caption and filename (what is plotted)
+# 1: binning
+# 2: variables to plot
+# 3: physical cuts
+def generateRateHist(varList, ntuple_file, dataset = "Data", datasetMC = "MC"):
+    generateCombinedRateHist(varList, ntuple_file, ntupleMC_file = "", dataset = "")
 
 # etaScalePos= [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.75,1.8,1.85,1.9,1.95,2.,2.05,2.1,2.15,2.2,2.25,2.3,2.35,2.4];
 # etaScale= [None] * 63
@@ -243,8 +365,11 @@ binningDict = {}
 binningDict["etaFine"] = [100, -2.6, 2.6]
 binningDict["phiFine"] = [100, -3.2, 3.2]
 binningDict["ptFine"] = [100, 0, 200]
+binningDict["pt50Fine"] = [100, 0, 50]
+binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["distNarrow"] = [50, 0, 0.4]
 binningDict["distWide"] = [50, 0, 2]
+binningDict["distWideFine"] = [100, 0, 2]
 
 
 ## Cuts
@@ -279,14 +404,14 @@ diMu_overlapRegion = "((abs(Eta1_reco) > 0.8) && (abs(Eta1_reco) < 1.3) && (abs(
 diMu_forwardRegion = "((abs(Eta1_reco) => 1.3) && (abs(Eta2_reco) => 1.3))"
 
 cutDict = {}
-cutDict["recoPt1"] = [mu1_recoPt1, "RecoMu1"]
-cutDict["gmtPt1"] = [mu1_gmtPt1, "GMTMu1"]
-cutDict["recoPt5"] = [mu1_recoPt5, "RecoMu5"]
-cutDict["gmtPt5"] = [mu1_gmtPt5, "GMTMu5"]
+cutDict["recoPt1"]      = [mu1_recoPt1, "RecoMu1"]
+cutDict["gmtPt1"]       = [mu1_gmtPt1, "GMTMu1"]
+cutDict["recoPt5"]      = [mu1_recoPt5, "RecoMu5"]
+cutDict["gmtPt5"]       = [mu1_gmtPt5, "GMTMu5"]
 cutDict["diMu-recoPt1"] = [diMu_recoPt1, "DiRecoMu1"]
-cutDict["diMu-gmtPt1"] = [diMu_gmtPt1, "DiGMTMu1"]
+cutDict["diMu-gmtPt1"]  = [diMu_gmtPt1, "DiGMTMu1"]
 cutDict["diMu-recoPt5"] = [diMu_recoPt5, "DiRecoMu5"]
-cutDict["diMu-gmtPt5"] = [diMu_gmtPt5, "DiGMTMu5"]
+cutDict["diMu-gmtPt5"]  = [diMu_gmtPt5, "DiGMTMu5"]
 
 cutDict["diMu-gmtPt1_cs"] = ["(" + diMu_gmtPt1 + " && " + correctCharges + ")", "DiGMTMu1_CorrectSign"]
 cutDict["diMu-gmtPt1_us"] = ["(" + diMu_gmtPt1 + " && " + usableCharges + ")", "DiGMTMu1_UsableSign"]
@@ -300,21 +425,27 @@ cutDict["diMu-recoPt5-brl"] = ["(" + diMu_recoPt5 + " && " + diMu_barrelRegion +
 cutDict["diMu-recoPt5-ovl"] = ["(" + diMu_recoPt5 + " && " + diMu_overlapRegion + ")", "DiGMTMu5_OverlapRegion"]
 cutDict["diMu-recoPt5-fwd"] = ["(" + diMu_recoPt5 + " && " + diMu_forwardRegion + ")", "DiGMTMu5_ForwardRegion"]
 
-cutDict["DTRPC"] = [bothDTRPC1, "DT+RPC", 8]
-cutDict["DTRPC1"] = [bothDTRPC1, "DT+RPC", 8]
-cutDict["DTRPC2"] = [bothDTRPC2, "DT+RPC", 8]
-cutDict["CSCRPC"] = [bothCSCRPC1, "CSC+RPC", 9]
-cutDict["CSCRPC1"] = [bothCSCRPC1, "CSC+RPC", 9]
-cutDict["CSCRPC2"] = [bothCSCRPC2, "CSC+RPC", 9]
-cutDict["DT"] = [onlyDT1, "DT", 30]
-cutDict["DT1"] = [onlyDT1, "DT", 30]
-cutDict["DT2"] = [onlyDT2, "DT", 30]
-cutDict["CSC"] = [onlyCSC1, "CSC", 40]
-cutDict["CSC1"] = [onlyCSC1, "CSC", 40]
-cutDict["CSC2"] = [onlyCSC2, "CSC", 40]
-cutDict["RPC"] = [onlyRPC1, "RPC", 46]
-cutDict["RPC1"] = [onlyRPC1, "RPC", 46]
-cutDict["RPC2"] = [onlyRPC2, "RPC", 46]
+DTconfirmed = kGreen + 3
+DTonly = kGreen - 10
+CSCconfirmed = kBlue
+CSConly = kBlue - 10
+RPC = kOrange + 1
+
+cutDict["DTRPC"]   = [bothDTRPC1, "DT+RPC", DTconfirmed]
+cutDict["DTRPC1"]  = [bothDTRPC1, "DT+RPC", DTconfirmed]
+cutDict["DTRPC2"]  = [bothDTRPC2, "DT+RPC", DTconfirmed]
+cutDict["CSCRPC"]  = [bothCSCRPC1, "CSC+RPC", CSCconfirmed]
+cutDict["CSCRPC1"] = [bothCSCRPC1, "CSC+RPC", CSCconfirmed]
+cutDict["CSCRPC2"] = [bothCSCRPC2, "CSC+RPC", CSCconfirmed]
+cutDict["DT"]      = [onlyDT1, "DT", DTonly]
+cutDict["DT1"]     = [onlyDT1, "DT", DTonly]
+cutDict["DT2"]     = [onlyDT2, "DT", DTonly]
+cutDict["CSC"]     = [onlyCSC1, "CSC", CSConly]
+cutDict["CSC1"]    = [onlyCSC1, "CSC", CSConly]
+cutDict["CSC2"]    = [onlyCSC2, "CSC", CSConly]
+cutDict["RPC"]     = [onlyRPC1, "RPC", RPC]
+cutDict["RPC1"]    = [onlyRPC1, "RPC", RPC]
+cutDict["RPC2"]    = [onlyRPC2, "RPC", RPC]
 
 stackCutDict = {}
 stackCutDict["subsystems_mu"] = [cutDict["DTRPC"], cutDict["CSCRPC"], cutDict["DT"], cutDict["CSC"], cutDict["RPC"]]
