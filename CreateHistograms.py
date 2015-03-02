@@ -237,6 +237,18 @@ def generate2DRateHist(varList, dataset = ""):
 #     etaScale[32+i] = etaScalePos[i+1]
 # etaScale[31]=0;
 
+## Binning
+
+binningDict = {}
+binningDict["etaFine"] = [100, -2.6, 2.6]
+binningDict["phiFine"] = [100, -3.2, 3.2]
+binningDict["ptFine"] = [100, 0, 200]
+binningDict["distNarrow"] = [50, 0, 0.4]
+binningDict["distWide"] = [50, 0, 2]
+
+
+## Cuts
+
 mu1_recoPt1            = "(pT1_reco>1)"
 mu1_gmtPt1             = "(pT1_GMT>1)"
 mu1_recoPt5            = "(pT1_reco>5)"
