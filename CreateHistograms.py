@@ -9,51 +9,63 @@ from ROOT import *
 # 3: physical cuts on GMT muons
 # 4: physical cuts on reco (and GMT) muons
 # (optional) 5: Range of y-axis
+def generateGhostPercHist(varList, dataset=""):
+    generateEffOrPercHist(varList, dataset, ["Probability for Ghosts vs. ", "ghost"])
+
+## varlist entries:
+# 0: descriptive string used for caption and filename (what is plotted)
+# 1: binning
+# 2: variables to plot
+# 3: physical cuts on GMT muons
+# 4: physical cuts on reco (and GMT) muons
+# (optional) 5: Range of y-axis
 def generateEfficiencyHist(varList, dataset=""):
+    generateEffOrPercHist(varList, dataset, ["Efficiency vs. ", "eff"])
+
+def generateEffOrPercHist(varList, dataset, typeStrings):
     if len(varList) < 6:
         minYAxis = 0
         maxYAxis = 1
-    else :
+    else:
         minYAxis = varList[5][0]
         maxYAxis = varList[5][1]
 
-    gStyle.SetOptStat(0);
-    legend = TLegend(0.70,0.5,0.95,0.8);
+    gStyle.SetOptStat(0)
 
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1] + ", "
     descrWOspaces = "_"+varList[3][1] + "_"
-    canvasTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[4][1]
-    histTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[4][1]
+    canvasTitle = typeStrings[0] + varList[0] + descrWspaces + varList[4][1]
+    histTitle = typeStrings[0] + varList[0] + descrWspaces + varList[4][1]
 
     # Create cut string
-    cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0], 0]
+    cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
 
     c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-    passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1], varList[1][2])
-    passHist.Sumw2()
     tmpHist = TH1D("tmpHist", "", varList[1][0], varList[1][1], varList[1][2])
+    passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1], varList[1][2])
     tmpHist.Sumw2()
     ntuple.Project("tmpHist", varList[2], varList[4][0])
     ntuple.Project("passHist", varList[2], cutString[1])
 
-    efficiencyGraph = TGraphAsymmErrors()
-    efficiencyHist = TH1D("passHist", histTitle, varList[1][0], varList[1][1], varList[1][2])
-    efficiencyHist.Divide(passHist, tmpHist, 1.0, 1.0)
-    efficiencyHist.SetMinimum(minYAxis)
-    efficiencyHist.SetMaximum(maxYAxis)
-    efficiencyGraph.Divide(passHist, tmpHist)
-    efficiencyHist.Draw("hist")
-    # efficiencyHist.Draw("E1,SAME")
-    efficiencyGraph.SetLineColor(38)
-    efficiencyGraph.SetMarkerColor(38)
-    efficiencyGraph.Draw("p,SAME")
-    efficiencyHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
+    finGraph = TGraphAsymmErrors()
+    finHist = TH1D("finHist", histTitle, varList[1][0], varList[1][1], varList[1][2])
+    finHist.Divide(passHist, tmpHist, 1.0, 1.0)
+    finHist.SetMinimum(minYAxis)
+    finHist.SetMaximum(maxYAxis)
+    finGraph.Divide(passHist, tmpHist)
+    finHist.Draw("hist")
+    # passHist.Draw("E1,SAME")
+    finGraph.SetLineColor(38)
+    finGraph.SetMarkerColor(38)
+    finGraph.Draw("p,SAME")
+    finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
     c1.Update()
 
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist_eff_" + dataset + varList[0] + descrWOspaces + varList[4][1] + ".pdf"
+    filename = "plots/hist_" + typeStrings[1] + "_" + dataset + varList[0] +\
+        descrWOspaces + varList[4][1] + ".pdf"
 
     c1.Print(filename, "pdf")
 
@@ -69,7 +81,7 @@ def generateEfficiencyStack(varList, dataset=""):
     if len(varList) < 7:
         minYAxis = 0
         maxYAxis = 1
-    else :
+    else:
         minYAxis = varList[6][0]
         maxYAxis = varList[6][1]
 
