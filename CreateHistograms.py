@@ -187,8 +187,8 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset = "", 
     f = TFile.Open(ntuple_file)
     ntuple = f.Get("ntuple")
 
-    c1 = TCanvas('c1', "Rate of " + varList[0] + " - " + varList[3][1], 200, 10, 700, 500)
-    rateHist = TH1D("rateHist", "Rate of " + varList[0] + " - " + varList[3][1], varList[1][0], varList[1][1], varList[1][2])
+    c1 = TCanvas('c1', "Distribution of " + varList[0] + " - " + varList[3][1], 200, 10, 700, 500)
+    rateHist = TH1D("rateHist", "Distribution of " + varList[0] + " - " + varList[3][1], varList[1][0], varList[1][1], varList[1][2])
     ntuple.Project("rateHist", varList[2], varList[3][0])
     rateHist.GetXaxis().SetTitle(varList[0])
     rateHist.Draw("hist")
@@ -198,7 +198,7 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset = "", 
         fMC = TFile.Open(ntupleMC_file)
         ntuple = fMC.Get("ntuple")
 
-        rateHistMC = TH1D("rateHistMC", "Rate vs. " + varList[0] + " - " + varList[3][1], varList[1][0], varList[1][1], varList[1][2])
+        rateHistMC = TH1D("rateHistMC", "Distribution of " + varList[0] + " - " + varList[3][1], varList[1][0], varList[1][1], varList[1][2])
         ntuple.Project("rateHistMC", varList[2], varList[3][0])
         rateHistMC.GetXaxis().SetTitle(varList[0])
         rateHistMC.SetLineColor(kRed)
@@ -219,7 +219,7 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset = "", 
         dataset += "_"
     if datasetMC != "":
         datasetMC += "_"
-    filename = "plots/hist_rate_" + combString + dataset + datasetMC + varList[0] + "_" + varList[3][1] + ".pdf"
+    filename = "plots/hist_dist_" + combString + dataset + datasetMC + varList[0] + "_" + varList[3][1] + ".pdf"
     c1.Print(filename, "pdf")
 
 ## varlist entries:
@@ -239,7 +239,7 @@ def generateRateStack(varList, ntuple_file, dataset = ""):
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1]
     descrWOspaces = "_"+varList[3][1]
-    title = "Rate of " + varList[0] + descrWspaces
+    title = "Distribution of " + varList[0] + descrWspaces
 
     c1 = TCanvas('c1', title, 200, 10, 700, 500)
     histStack = THStack("histStack", title + ";" + varList[0] + ";Events")
@@ -253,7 +253,7 @@ def generateRateStack(varList, ntuple_file, dataset = ""):
 
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist_rate_" + dataset + "stack_" + varList[0] + descrWOspaces + ".pdf"
+    filename = "plots/hist_dist_" + dataset + "stack_" + varList[0] + descrWOspaces + ".pdf"
 
     for cutString in cutStrings:
         rateHist = TH1D("rateHist", cutString[0], varList[1][0], varList[1][1], varList[1][2])
@@ -311,7 +311,7 @@ def generate2DRateHist(varList, ntuple_file, dataset = ""):
     f = TFile.Open(ntuple_file)
     ntuple = f.Get("ntuple")
 
-    c1 = TCanvas('c1', "Rate of " + varList[0] + " - " + varList[4][1], 200, 10, 700, 500)
+    c1 = TCanvas('c1', "Distribution of " + varList[0] + " - " + varList[4][1], 200, 10, 700, 500)
     rateHist = TH2D("rateHist", varList[0] + " - " + varList[4][1], varList[1][0], varList[1][1], varList[1][2], varList[2][0], varList[2][1], varList[2][2])
     ntuple.Project("rateHist", varList[3], varList[4][0])
     axLbl = varList[3].split(":")
@@ -321,7 +321,7 @@ def generate2DRateHist(varList, ntuple_file, dataset = ""):
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist2D_rate_" + dataset + varList[0] + "_" + varList[4][1] + ".pdf"
+    filename = "plots/hist2D_dist_" + dataset + varList[0] + "_" + varList[4][1] + ".pdf"
     c1.Print(filename, "pdf")
 
 ## varlist entries:
@@ -408,13 +408,15 @@ cutDict["recoPt1"]      = [mu1_recoPt1, "RecoMu1"]
 cutDict["gmtPt1"]       = [mu1_gmtPt1, "GMTMu1"]
 cutDict["recoPt5"]      = [mu1_recoPt5, "RecoMu5"]
 cutDict["gmtPt5"]       = [mu1_gmtPt5, "GMTMu5"]
-cutDict["diMu-recoPt1"] = [diMu_recoPt1, "DiRecoMu1"]
-cutDict["diMu-gmtPt1"]  = [diMu_gmtPt1, "DiGMTMu1"]
-cutDict["diMu-recoPt5"] = [diMu_recoPt5, "DiRecoMu5"]
-cutDict["diMu-gmtPt5"]  = [diMu_gmtPt5, "DiGMTMu5"]
 
+cutDict["diMu-recoPt1"] = [diMu_recoPt1, "DiRecoMu1"]
+cutDict["diMu-recoPt5"] = [diMu_recoPt5, "DiRecoMu5"]
+
+cutDict["diMu-gmtPt1"]  = [diMu_gmtPt1, "DiGMTMu1"]
 cutDict["diMu-gmtPt1_cs"] = ["(" + diMu_gmtPt1 + " && " + correctCharges + ")", "DiGMTMu1_CorrectSign"]
 cutDict["diMu-gmtPt1_us"] = ["(" + diMu_gmtPt1 + " && " + usableCharges + ")", "DiGMTMu1_UsableSign"]
+
+cutDict["diMu-gmtPt5"]  = [diMu_gmtPt5, "DiGMTMu5"]
 cutDict["diMu-gmtPt5_cs"] = ["(" + diMu_gmtPt5 + " && " + correctCharges + ")", "DiGMTMu5_CorrectSign"]
 cutDict["diMu-gmtPt5_us"] = ["(" + diMu_gmtPt5 + " && " + usableCharges + ")", "DiGMTMu5_UsableSign"]
 
