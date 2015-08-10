@@ -108,10 +108,13 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="", d
 
     if (datasetMC != "") and (datasetMC != "MC"):
         datasetMC += "_"
-    filename = "plots/hist_" + combString + typeStrings[1] + "_" + dataset + datasetMC + varList[0] +\
-        descrWOspaces + varList[4][1] + ".pdf"
+    filename_pdf = "plots/hist_" + combString + typeStrings[1] + "_" +\
+    dataset + datasetMC + varList[0] + descrWOspaces + varList[4][1] + ".pdf"
+    filename_png = "plots/hist_" + combString + typeStrings[1] + "_" +\
+    dataset + datasetMC + varList[0] + descrWOspaces + varList[4][1] + ".png"
 
-    c1.Print(filename, "pdf")
+    c1.Print(filename_pdf)
+    c1.Print(filename_png)
 
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -156,7 +159,11 @@ def generateEfficiencyStack(varList, ntuple_file, dataset=""):
 
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist_eff_" + dataset + "stack_" + varList[0] + descrWOspaces + varList[4][1] + ".pdf"
+
+    filename_pdf = "plots/hist_eff_" + dataset + "stack_" + varList[0] +\
+    descrWOspaces + varList[4][1] + ".pdf"
+    filename_png = "plots/hist_eff_" + dataset + "stack_" + varList[0] +\
+    descrWOspaces + varList[4][1] + ".png"
 
     for cutString in cutStrings:
         efficiencyHist = TH1D("effHist", cutString[0], varList[1][0], varList[1][1], varList[1][2])
@@ -170,7 +177,8 @@ def generateEfficiencyStack(varList, ntuple_file, dataset=""):
     histStack.Draw()
     legend.Draw("")
     c1.Update()
-    c1.Print(filename, "pdf")
+    c1.Print(filename_pdf)
+    c1.Print(filename_png)
 
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -219,8 +227,12 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset = "", 
         dataset += "_"
     if datasetMC != "":
         datasetMC += "_"
-    filename = "plots/hist_dist_" + combString + dataset + datasetMC + varList[0] + "_" + varList[3][1] + ".pdf"
-    c1.Print(filename, "pdf")
+    filename_pdf = "plots/hist_dist_" + combString + dataset + datasetMC +\
+    varList[0] + "_" + varList[3][1] + ".pdf"
+    filename_png = "plots/hist_dist_" + combString + dataset + datasetMC +\
+    varList[0] + "_" + varList[3][1] + ".png"
+    c1.Print(filename_pdf)
+    c1.Print(filename_png)
 
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -253,7 +265,8 @@ def generateRateStack(varList, ntuple_file, dataset = ""):
 
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist_dist_" + dataset + "stack_" + varList[0] + descrWOspaces + ".pdf"
+    filename_pdf = "plots/hist_dist_" + dataset + "stack_" + varList[0] + descrWOspaces + ".pdf"
+    filename_png = "plots/hist_dist_" + dataset + "stack_" + varList[0] + descrWOspaces + ".png"
 
     for cutString in cutStrings:
         rateHist = TH1D("rateHist", cutString[0], varList[1][0], varList[1][1], varList[1][2])
@@ -264,7 +277,8 @@ def generateRateStack(varList, ntuple_file, dataset = ""):
     histStack.Draw()
     legend.Draw("")
     c1.Update()
-    c1.Print(filename, "pdf")
+    c1.Print(filename_pdf)
+    c1.Print(filename_png)
 
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -295,8 +309,12 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset = ""):
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist2D_eff_" + dataset + varList[0] + descrWOspaces + varList[5][1] + ".pdf"
-    c1.Print(filename, "pdf")
+    filename_pdf = "plots/hist2D_eff_" + dataset + varList[0] + descrWOspaces +\
+    varList[5][1] + ".pdf"
+    filename_png = "plots/hist2D_eff_" + dataset + varList[0] + descrWOspaces +\
+    varList[5][1] + ".png"
+    c1.Print(filename_pdf)
+    c1.Print(filename_png)
 
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -321,8 +339,12 @@ def generate2DRateHist(varList, ntuple_file, dataset = ""):
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename = "plots/hist2D_dist_" + dataset + varList[0] + "_" + varList[4][1] + ".pdf"
-    c1.Print(filename, "pdf")
+    filename_pdf = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
+    varList[4][1] + ".pdf"
+    filename_png = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
+    varList[4][1] + ".png"
+    c1.Print(filename_pdf)
+    c1.Print(filename_png)
 
 ## varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -399,9 +421,13 @@ onlyRPC1           = "((SubsysID1_GMT == 4) || (SubsysID1_GMT == 5))"
 onlyRPC2           = "((SubsysID2_GMT == 4) || (SubsysID2_GMT == 5))"
 correctCharges     = "(Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)"
 usableCharges      = "(((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) || ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco)))"
-diMu_barrelRegion  = "((abs(Eta1_reco) <= 0.8) && (abs(Eta2_reco) < 0.8))"
+diMu_barrelRegion  = "((abs(Eta1_reco) <= 0.8) && (abs(Eta2_reco) <= 0.8))"
 diMu_overlapRegion = "((abs(Eta1_reco) > 0.8) && (abs(Eta1_reco) < 1.3) && (abs(Eta2_reco) > 0.8) && (abs(Eta2_reco) < 1.3))"
 diMu_forwardRegion = "((abs(Eta1_reco) => 1.3) && (abs(Eta2_reco) => 1.3))"
+diMu_centralRegion  = "((abs(Eta1_reco) < 1.6) && (abs(Eta2_reco) < 1.6))"
+diMu_forwardRegion  = "((abs(Eta1_reco) => 1.6) && (abs(Eta2_reco) => 1.6))"
+diMu_centralRegion_gmt  = "((abs(Eta1_GMT) < 1.6) && (abs(Eta2_GMT) < 1.6))"
+diMu_forwardRegion_gmt  = "((abs(Eta1_GMT) => 1.6) && (abs(Eta2_GMT) => 1.6))"
 
 cutDict = {}
 cutDict["recoPt1"]      = [mu1_recoPt1, "RecoMu1"]
@@ -420,12 +446,21 @@ cutDict["diMu-gmtPt5"]  = [diMu_gmtPt5, "DiGMTMu5"]
 cutDict["diMu-gmtPt5_cs"] = ["(" + diMu_gmtPt5 + " && " + correctCharges + ")", "DiGMTMu5_CorrectSign"]
 cutDict["diMu-gmtPt5_us"] = ["(" + diMu_gmtPt5 + " && " + usableCharges + ")", "DiGMTMu5_UsableSign"]
 
+cutDict["diMu-recoPt1-brl"] = ["(" + diMu_recoPt1 + " && " + diMu_barrelRegion + ")", "DiGMTMu1_BarrelRegion"]
+cutDict["diMu-recoPt1-ovl"] = ["(" + diMu_recoPt1 + " && " + diMu_overlapRegion + ")", "DiGMTMu1_OverlapRegion"]
+cutDict["diMu-recoPt1-fwd"] = ["(" + diMu_recoPt1 + " && " + diMu_forwardRegion + ")", "DiGMTMu1_ForwardRegion"]
+cutDict["diMu-recoPt1-central"] = ["(" + diMu_recoPt1 + " && " + diMu_centralRegion + ")", "DiGMTMu1_CentralRegion"]
+cutDict["diMu-recoPt1-forward"] = ["(" + diMu_recoPt1 + " && " + diMu_forwardRegion + ")", "DiGMTMu1_ForwardRegion"]
 cutDict["diMu-recoPt5-brl"] = ["(" + diMu_recoPt5 + " && " + diMu_barrelRegion + ")", "DiGMTMu5_BarrelRegion"]
 cutDict["diMu-recoPt5-ovl"] = ["(" + diMu_recoPt5 + " && " + diMu_overlapRegion + ")", "DiGMTMu5_OverlapRegion"]
 cutDict["diMu-recoPt5-fwd"] = ["(" + diMu_recoPt5 + " && " + diMu_forwardRegion + ")", "DiGMTMu5_ForwardRegion"]
-cutDict["diMu-recoPt5-brl"] = ["(" + diMu_recoPt5 + " && " + diMu_barrelRegion + ")", "DiGMTMu5_BarrelRegion"]
-cutDict["diMu-recoPt5-ovl"] = ["(" + diMu_recoPt5 + " && " + diMu_overlapRegion + ")", "DiGMTMu5_OverlapRegion"]
-cutDict["diMu-recoPt5-fwd"] = ["(" + diMu_recoPt5 + " && " + diMu_forwardRegion + ")", "DiGMTMu5_ForwardRegion"]
+cutDict["diMu-recoPt5-central"] = ["(" + diMu_recoPt5 + " && " + diMu_centralRegion + ")", "DiGMTMu5_CentralRegion"]
+cutDict["diMu-recoPt5-forward"] = ["(" + diMu_recoPt5 + " && " + diMu_forwardRegion + ")", "DiGMTMu5_ForwardRegion"]
+
+cutDict["diMu-gmtPt1-central_etagmt"] = ["(" + diMu_gmtPt1 + " && " + diMu_centralRegion_gmt + ")", "DiGMTMu5_CentralRegion"]
+cutDict["diMu-gmtPt1-forward_etagmt"] = ["(" + diMu_gmtPt1 + " && " + diMu_forwardRegion_gmt + ")", "DiGMTMu5_ForwardRegion"]
+
+
 
 DTconfirmed = kGreen + 3
 DTonly = kGreen - 10
