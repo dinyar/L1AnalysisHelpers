@@ -383,23 +383,28 @@ def generateRateHist(varList, ntuple_file, dataset = "Data", datasetMC = "MC"):
 
 ## Binning
 
-binningDict = {}
-binningDict["etaFine"] = [100, -2.6, 2.6]
-binningDict["phiFine"] = [100, -3.2, 3.2]
-binningDict["ptFine"] = [100, 0, 200]
-binningDict["pt50Fine"] = [100, 0, 50]
-binningDict["pt25Fine"] = [100, 0, 25]
-binningDict["distNarrow"] = [50, 0, 0.4]
-binningDict["distWide"] = [50, 0, 2]
+binningDict                 = {}
+binningDict["etaFine"]      = [100, -2.6, 2.6]
+binningDict["phiFine"]      = [100, -3.2, 3.2]
+binningDict["ptFine"]       = [100, 0, 200]
+binningDict["pt50Fine"]     = [100, 0, 50]
+binningDict["pt25Fine"]     = [100, 0, 25]
+binningDict["invMassFine"]  = [80, 0, 20]
+binningDict["distNarrow"]   = [50, 0, 0.4]
+binningDict["distWide"]     = [50, 0, 2]
 binningDict["distWideFine"] = [100, 0, 2]
 
 
 ## Cuts
 
-mu1_recoPt1            = "(pT1_reco>1)"
-mu1_gmtPt1             = "(pT1_GMT>1)"
-mu1_recoPt5            = "(pT1_reco>5)"
-mu1_gmtPt5             = "(pT1_GMT>5)"
+mu1_recoPt1        = "(pT1_reco>1)"
+mu1_gmtPt1         = "(pT1_GMT>1)"
+mu1_recoPt5        = "(pT1_reco>5)"
+mu1_gmtPt5         = "(pT1_GMT>5)"
+jPsi_recoPt1       = "(pT_dimuon_reco>1)"
+jPsi_gmtPt1        = "(pT_dimuon_GMT>1)"
+jPsi_recoPt5       = "(pT_dimuon_reco>5)"
+jPsi_gmtPt5        = "(pT_dimuon_GMT>5)"
 diMu_recoPt1       = "((pT1_reco>1) && (pT2_reco>1))"
 diMu_gmtPt1        = "((pT1_GMT>1) && (pT2_GMT>1))"
 diMu_recoPt5       = "((pT1_reco>5) && (pT2_reco>5))"
@@ -434,15 +439,18 @@ cutDict["recoPt1"]      = [mu1_recoPt1, "RecoMu1"]
 cutDict["gmtPt1"]       = [mu1_gmtPt1, "GMTMu1"]
 cutDict["recoPt5"]      = [mu1_recoPt5, "RecoMu5"]
 cutDict["gmtPt5"]       = [mu1_gmtPt5, "GMTMu5"]
+cutDict["jpsi-gmtPt1"]  = [jPsi_gmtPt1, "GMTJPsi1"]
+cutDict["jpsi-gmtPt1_cs"]  = ["(" + jPsi_gmtPt1 + " && " + correctCharges + ")", "GMTJPsi1_CorrectSign"]
+cutDict["jpsi-gmtPt1_us"]  = ["(" + jPsi_gmtPt1 + " && " + usableCharges + ")", "GMTJPsi1_UsableSign"]
 
 cutDict["diMu-recoPt1"] = [diMu_recoPt1, "DiRecoMu1"]
 cutDict["diMu-recoPt5"] = [diMu_recoPt5, "DiRecoMu5"]
 
-cutDict["diMu-gmtPt1"]  = [diMu_gmtPt1, "DiGMTMu1"]
+cutDict["diMu-gmtPt1"]    = [diMu_gmtPt1, "DiGMTMu1"]
 cutDict["diMu-gmtPt1_cs"] = ["(" + diMu_gmtPt1 + " && " + correctCharges + ")", "DiGMTMu1_CorrectSign"]
 cutDict["diMu-gmtPt1_us"] = ["(" + diMu_gmtPt1 + " && " + usableCharges + ")", "DiGMTMu1_UsableSign"]
 
-cutDict["diMu-gmtPt5"]  = [diMu_gmtPt5, "DiGMTMu5"]
+cutDict["diMu-gmtPt5"]    = [diMu_gmtPt5, "DiGMTMu5"]
 cutDict["diMu-gmtPt5_cs"] = ["(" + diMu_gmtPt5 + " && " + correctCharges + ")", "DiGMTMu5_CorrectSign"]
 cutDict["diMu-gmtPt5_us"] = ["(" + diMu_gmtPt5 + " && " + usableCharges + ")", "DiGMTMu5_UsableSign"]
 
@@ -462,11 +470,12 @@ cutDict["diMu-gmtPt1-forward_etagmt"] = ["(" + diMu_gmtPt1 + " && " + diMu_forwa
 
 
 
-DTconfirmed = kGreen + 3
-DTonly = kGreen - 10
+# #TODO:0 Find better colours.
+DTconfirmed  = kGreen + 3
+DTonly       = kGreen - 10
 CSCconfirmed = kBlue
-CSConly = kBlue - 10
-RPC = kOrange + 1
+CSConly      = kBlue - 10
+RPC          = kOrange + 1
 
 cutDict["DTRPC"]   = [bothDTRPC1, "DT+RPC", DTconfirmed]
 cutDict["DTRPC1"]  = [bothDTRPC1, "DT+RPC", DTconfirmed]
@@ -484,7 +493,7 @@ cutDict["RPC"]     = [onlyRPC1, "RPC", RPC]
 cutDict["RPC1"]    = [onlyRPC1, "RPC", RPC]
 cutDict["RPC2"]    = [onlyRPC2, "RPC", RPC]
 
-stackCutDict = {}
-stackCutDict["subsystems_mu"] = [cutDict["DTRPC"], cutDict["CSCRPC"], cutDict["DT"], cutDict["CSC"], cutDict["RPC"]]
+stackCutDict                   = {}
+stackCutDict["subsystems_mu"]  = [cutDict["DTRPC"], cutDict["CSCRPC"], cutDict["DT"], cutDict["CSC"], cutDict["RPC"]]
 stackCutDict["subsystems_mu1"] = [cutDict["DTRPC1"], cutDict["CSCRPC1"], cutDict["DT1"], cutDict["CSC1"], cutDict["RPC1"]]
 stackCutDict["subsystems_mu2"] = [cutDict["DTRPC2"], cutDict["CSCRPC2"], cutDict["DT2"], cutDict["CSC2"], cutDict["RPC2"]]
