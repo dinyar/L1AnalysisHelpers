@@ -378,8 +378,8 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
                     varList[2][1], varList[2][2])
     ntuple.Project("rateHist", varList[3], varList[4][0])
     axLbl = varList[3].split(":")
-    rateHist.GetXaxis().SetTitle(axLbl[0])
-    rateHist.GetYaxis().SetTitle(axLbl[1])
+    rateHist.GetXaxis().SetTitle(axLbl[1])
+    rateHist.GetYaxis().SetTitle(axLbl[0])
     rateHist.DrawCopy("COLZ")
     c1.Update()
     if dataset != "":
