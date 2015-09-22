@@ -64,6 +64,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     passHist.Sumw2()
     ntuple.Project("recoHist", varList[2], varList[4][0])
     ntuple.Project("passHist", varList[2], cutString[1])
+    recoHist.GetXaxis().SetTitle(varList[0])
+    recoHist.GetYaxis().SetTitle("Counts")
     passHist.GetXaxis().SetTitle(varList[0])
     passHist.GetYaxis().SetTitle("Counts")
 
