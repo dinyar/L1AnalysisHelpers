@@ -64,14 +64,16 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     passHist.Sumw2()
     ntuple.Project("recoHist", varList[2], varList[4][0])
     ntuple.Project("passHist", varList[2], cutString[1])
+    passHist.GetXaxis().SetTitle(varList[0])
+    passHist.GetYaxis().SetTitle("Counts")
 
     recoHist.SetLineColor(kRed)
     recoHist.Draw("E1HIST")
     passHist.SetLineColor(kBlue)
     passHist.Draw("E1HISTSAME")
     legend = TLegend(0.55, 0.1, 0.9, 0.2)
-    # legend.SetFillStyle(0)
-    # legend.SetTextSize(0.0275)``
+    legend.SetFillStyle(0)
+    # legend.SetTextSize(0.0275)
     legend.AddEntry(recoHist,
                     "Reconstructed muons", "L")
     legend.AddEntry(passHist,
@@ -83,6 +85,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     c1.Print(distCompTitle + ".png")
     c1.Print(distCompTitle + ".pdf")
 
+    # Make efficiency histogram
     c2 = TCanvas('c2', canvasTitle, 200, 10, 700, 500)
 
     finGraph = TGraphAsymmErrors()
