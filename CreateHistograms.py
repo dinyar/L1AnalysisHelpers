@@ -82,7 +82,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
                     "Trigger muons", "L")
     legend.Draw("SAME")
     # #TODO:0 Need to handle this in case we're doing combination plots.
-    distCompTitle = "plots/" + "dist_" + dataset + varList[0] + descrWOspaces +\
+    distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0] + descrWOspaces +\
                     varList[4][1]
     c1.Print(distCompTitle + ".png")
     c1.Print(distCompTitle + ".pdf")
