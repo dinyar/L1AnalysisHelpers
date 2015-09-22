@@ -55,21 +55,41 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     # Create cut string
     cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
 
-    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-    tmpHist = TH1D("tmpHist", "", varList[1][0], varList[1][1], varList[1][2])
+    recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
     passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1],
                     varList[1][2])
-    tmpHist.Sumw2()
-    ntuple.Project("tmpHist", varList[2], varList[4][0])
+    recoHist.Sumw2()
+    passHist.Sumw2()
+    ntuple.Project("recoHist", varList[2], varList[4][0])
     ntuple.Project("passHist", varList[2], cutString[1])
+
+    recoHist.SetLineColor(ROOT.kRed)
+    recoHist.Draw("E1HIST")
+    passHist.SetLineColor(ROOT.kBlue)
+    passHist.Draw("E1HISTSAME")
+    legend = ROOT.TLegend(0.47,0.87,0.99,0.99)
+    legend.SetFillStyle(0)
+    legend.SetTextSize(0.0275)
+    legend.AddEntry(recoHist,
+                    "Reconstructed muons", "LEP")
+    legend.AddEntry(passHist,
+                    "Trigger muons", "LEP")
+    legend.Draw("SAME")
+    # #TODO:0 Need to handle this in case we're doing combination plots.
+    distCompTitle = "plots/" + "dist_" + dataset + varList[0] + descrWOspaces +\
+                    varList[4][1]
+    c1.Print(distCompTitle + ".png")
+    c1.Print(distCompTitle + ".pdf")
+
+    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
 
     finGraph = TGraphAsymmErrors()
     finHist = TH1D("finHist", histTitle, varList[1][0], varList[1][1],
                    varList[1][2])
-    finHist.Divide(passHist, tmpHist, 1.0, 1.0)
+    finHist.Divide(passHist, recoHist, 1.0, 1.0)
     finHist.SetMinimum(minYAxis)
     finHist.SetMaximum(maxYAxis)
-    finGraph.Divide(passHist, tmpHist)
+    finGraph.Divide(passHist, recoHist)
     finHist.GetXaxis().SetTitle(varList[0])
     finHist.GetYaxis().SetTitle(typeStrings[0])
     finHist.Draw("hist")
@@ -83,21 +103,21 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         # Get ntuple
         f = TFile.Open(ntupleMC_file)
         ntuple = f.Get("ntuple")
-        tmpHistMC = TH1D("tmpHistMC", "", varList[1][0], varList[1][1],
+        recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
                          varList[1][2])
         passHistMC = TH1D("passHistMC", cutString[0], varList[1][0],
                           varList[1][1], varList[1][2])
-        tmpHistMC.Sumw2()
-        ntuple.Project("tmpHistMC", varList[2], varList[4][0])
+        recoHistMC.Sumw2()
+        ntuple.Project("recoHistMC", varList[2], varList[4][0])
         ntuple.Project("passHistMC", varList[2], cutString[1])
 
         finGraphMC = TGraphAsymmErrors()
         finHistMC = TH1D("finHistMC", histTitle, varList[1][0], varList[1][1],
                          varList[1][2])
-        finHistMC.Divide(passHistMC, tmpHistMC, 1.0, 1.0)
+        finHistMC.Divide(passHistMC, recoHistMC, 1.0, 1.0)
         finHistMC.SetMinimum(minYAxis)
         finHistMC.SetMaximum(maxYAxis)
-        finGraphMC.Divide(passHistMC, tmpHistMC)
+        finGraphMC.Divide(passHistMC, recoHistMC)
         finHistMC.SetLineColor(kRed)
         # finHistMC.Draw("HistMC, SAME")
         # passHistMC.Draw("E1,SAME")
@@ -113,7 +133,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         legend.AddEntry(finHistMC, datasetMC, "L")
         legend.Draw()
 
-        combString = "combined_"
+        combString = "_comb"
     else:
         combString = ""
 
@@ -124,12 +144,12 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
 
     if (datasetMC != "") and (datasetMC != "MC"):
         datasetMC += "_"
-    filename_pdf = "plots/hist_" + combString + typeStrings[1] + "_" +\
+    filename_pdf = "plots/" + typeStrings[1] + "_" +\
         dataset + datasetMC + varList[0] + descrWOspaces + varList[4][1] +\
-        ".pdf"
-    filename_png = "plots/hist_" + combString + typeStrings[1] + "_" +\
+        combString + ".pdf"
+    filename_png = "plots/" + typeStrings[1] + "_" +\
         dataset + datasetMC + varList[0] + descrWOspaces + varList[4][1] +\
-        ".png"
+        combString + ".png"
 
     c1.Print(filename_pdf)
     c1.Print(filename_png)
@@ -180,9 +200,9 @@ def generateEfficiencyStack(varList, ntuple_file, dataset=""):
     if dataset != "":
         dataset += "_"
 
-    filename_pdf = "plots/hist_eff_" + dataset + "stack_" + varList[0] +\
+    filename_pdf = "plots/eff_" + dataset + "stack_" + varList[0] +\
         descrWOspaces + varList[4][1] + ".pdf"
-    filename_png = "plots/hist_eff_" + dataset + "stack_" + varList[0] +\
+    filename_png = "plots/eff_" + dataset + "stack_" + varList[0] +\
         descrWOspaces + varList[4][1] + ".png"
 
     for cutString in cutStrings:
@@ -247,7 +267,7 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset="",
         legend.AddEntry(rateHistMC, datasetMC, "L")
         legend.Draw("")
 
-        combString = "combined_"
+        combString = "_comb"
     else:
         combString = ""
 
@@ -256,10 +276,10 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset="",
         dataset += "_"
     if datasetMC != "":
         datasetMC += "_"
-    filename_pdf = "plots/hist_dist_" + combString + dataset + datasetMC +\
-        varList[0] + "_" + varList[3][1] + ".pdf"
-    filename_png = "plots/hist_dist_" + combString + dataset + datasetMC +\
-        varList[0] + "_" + varList[3][1] + ".png"
+    filename_pdf = "plots/dist_" + dataset + datasetMC +\
+        varList[0] + "_" + varList[3][1] + combString + ".pdf"
+    filename_png = "plots/dist_" + dataset + datasetMC +\
+        varList[0] + "_" + varList[3][1] + combString + ".png"
     c1.Print(filename_pdf)
     c1.Print(filename_png)
 
@@ -296,9 +316,9 @@ def generateRateStack(varList, ntuple_file, dataset=""):
 
     if dataset != "":
         dataset += "_"
-    filename_pdf = "plots/hist_dist_" + dataset + "stack_" + varList[0] +\
+    filename_pdf = "plots/dist_" + dataset + "stack_" + varList[0] +\
         descrWOspaces + ".pdf"
-    filename_png = "plots/hist_dist_" + dataset + "stack_" + varList[0] +\
+    filename_png = "plots/dist_" + dataset + "stack_" + varList[0] +\
         descrWOspaces + ".png"
 
     for cutString in cutStrings:
@@ -438,6 +458,7 @@ def generateRateHist(varList, ntuple_file, dataset="Data", datasetMC="MC"):
 
 binningDict = {}
 binningDict["etaFine"] = [100, -2.6, 2.6]
+binningDict["etaFine_centralRegion"] = [80, -1.6, 1.6]
 binningDict["phiFine"] = [100, -3.2, 3.2]
 binningDict["ptFine"] = [100, 0, 200]
 binningDict["pt50Fine"] = [100, 0, 50]
@@ -547,10 +568,28 @@ cutDict["diMu-recoPt5-forward"] = [
 cutDict["diMu-gmtPt1-central_etagmt"] = [
     "(" + diMu_gmtPt1 + " && " + diMu_centralRegion_gmt + ")",
     "DiGMTMu5_CentralRegion"]
+cutDict["diMu-gmtPt1-central_etagmt_us"] = [
+    "(" + diMu_gmtPt1 + " && " + usableCharges + " && " + diMu_centralRegion_gmt + ")",
+    "DiGMTMu5_CentralRegion_UsableSign"]
+
+cutDict["jpsi-Pt1-central"] = ["(" + jPsiPt1 + " && " +
+                               diMu_centralRegion_gmt + ")",
+                               "JPsi1_CentralRegion"]
+cutDict["jpsi-Pt1-central_us"] = ["(" + jPsiPt1 + " && " +
+                                  diMu_centralRegion_gmt +
+                                  " && " + correctCharges + ")",
+                                  "JPsi1_CentralRegion_CorrectSign"]
+cutDict["jpsi-Pt1-central_us"] = ["(" + jPsiPt1 + " && " +
+                                  diMu_centralRegion_gmt +
+                                  " && " + usableCharges + ")",
+                                  "JPsi1_CentralRegion_UsableSign"]
+
 cutDict["diMu-gmtPt1-forward_etagmt"] = [
     "(" + diMu_gmtPt1 + " && " + diMu_forwardRegion_gmt + ")",
     "DiGMTMu5_ForwardRegion"]
 
+
+# #TODO:0 Introduce cut dict producer method. (Takes list of cut strings and makes cut dict)
 
 # #TODO:0 Find better colours.
 DTconfirmed = kGreen - 2
