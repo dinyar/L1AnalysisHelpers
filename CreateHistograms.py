@@ -69,13 +69,13 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     recoHist.Draw("E1HIST")
     passHist.SetLineColor(kBlue)
     passHist.Draw("E1HISTSAME")
-    legend = TLegend(0.47,0.87,0.99,0.99)
-    legend.SetFillStyle(0)
-    legend.SetTextSize(0.0275)
+    legend = TLegend(0.55, 0.1, 0.9, 0.2)
+    # legend.SetFillStyle(0)
+    # legend.SetTextSize(0.0275)``
     legend.AddEntry(recoHist,
-                    "Reconstructed muons", "LEP")
+                    "Reconstructed muons", "L")
     legend.AddEntry(passHist,
-                    "Trigger muons", "LEP")
+                    "Trigger muons", "L")
     legend.Draw("SAME")
     # #TODO:0 Need to handle this in case we're doing combination plots.
     distCompTitle = "plots/" + "dist_" + dataset + varList[0] + descrWOspaces +\
