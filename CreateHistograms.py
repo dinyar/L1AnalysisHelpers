@@ -553,11 +553,11 @@ cutDict["diMu-gmtPt1-forward_etagmt"] = [
 
 
 # #TODO:0 Find better colours.
-DTconfirmed = kGreen + 3
-DTonly = kGreen - 10
-CSCconfirmed = kBlue
+DTconfirmed = kGreen - 2
+DTonly = kGreen - 9
+CSCconfirmed = kBlue - 3
 CSConly = kBlue - 10
-RPC = kOrange + 1
+RPC = kRed - 3
 
 cutDict["DTRPC"] = [bothDTRPC1, "DT+RPC", DTconfirmed]
 cutDict["DTRPC1"] = [bothDTRPC1, "DT+RPC", DTconfirmed]
