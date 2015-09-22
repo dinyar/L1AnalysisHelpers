@@ -55,6 +55,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     # Create cut string
     cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
 
+    # Make dist histogram
+    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
     recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
     passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1],
                     varList[1][2])
@@ -63,11 +65,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     ntuple.Project("recoHist", varList[2], varList[4][0])
     ntuple.Project("passHist", varList[2], cutString[1])
 
-    recoHist.SetLineColor(ROOT.kRed)
+    recoHist.SetLineColor(kRed)
     recoHist.Draw("E1HIST")
-    passHist.SetLineColor(ROOT.kBlue)
+    passHist.SetLineColor(kBlue)
     passHist.Draw("E1HISTSAME")
-    legend = ROOT.TLegend(0.47,0.87,0.99,0.99)
+    legend = TLegend(0.47,0.87,0.99,0.99)
     legend.SetFillStyle(0)
     legend.SetTextSize(0.0275)
     legend.AddEntry(recoHist,
@@ -81,7 +83,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     c1.Print(distCompTitle + ".png")
     c1.Print(distCompTitle + ".pdf")
 
-    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
+    c2 = TCanvas('c2', canvasTitle, 200, 10, 700, 500)
 
     finGraph = TGraphAsymmErrors()
     finHist = TH1D("finHist", histTitle, varList[1][0], varList[1][1],
@@ -137,7 +139,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     else:
         combString = ""
 
-    c1.Update()
+    c2.Update()
 
     if (dataset != "") and (dataset != "Data"):
         dataset += "_"
@@ -151,8 +153,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         dataset + datasetMC + varList[0] + descrWOspaces + varList[4][1] +\
         combString + ".png"
 
-    c1.Print(filename_pdf)
-    c1.Print(filename_png)
+    c2.Print(filename_pdf)
+    c2.Print(filename_png)
 
 
 # varlist entries:
@@ -575,7 +577,7 @@ cutDict["diMu-gmtPt1-central_etagmt_us"] = [
 cutDict["jpsi-Pt1-central"] = ["(" + jPsiPt1 + " && " +
                                diMu_centralRegion_gmt + ")",
                                "JPsi1_CentralRegion"]
-cutDict["jpsi-Pt1-central_us"] = ["(" + jPsiPt1 + " && " +
+cutDict["jpsi-Pt1-central_cs"] = ["(" + jPsiPt1 + " && " +
                                   diMu_centralRegion_gmt +
                                   " && " + correctCharges + ")",
                                   "JPsi1_CentralRegion_CorrectSign"]
