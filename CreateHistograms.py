@@ -520,21 +520,16 @@ diMu_recoPt1 = "((pT1_reco>1) && (pT2_reco>1))"
 diMu_gmtPt1 = "((pT1_GMT>1) && (pT2_GMT>1))"
 diMu_recoPt5 = "((pT1_reco>5) && (pT2_reco>5))"
 diMu_gmtPt5 = "((pT1_GMT>5) && (pT2_GMT>5))"
-bothDTRPC = "(SubsysID_GMT == 0)"
-bothDTRPC1 = "(SubsysID1_GMT == 0)"
-bothDTRPC2 = "(SubsysID2_GMT == 0)"
-bothCSCRPC = "(SubsysID_GMT == 1)"
-bothCSCRPC1 = "(SubsysID1_GMT == 1)"
-bothCSCRPC2 = "(SubsysID2_GMT == 1)"
-onlyDT = "(SubsysID_GMT == 2)"
-onlyDT1 = "(SubsysID1_GMT == 2)"
-onlyDT2 = "(SubsysID2_GMT == 2)"
-onlyCSC = "(SubsysID_GMT == 3)"
-onlyCSC1 = "(SubsysID1_GMT == 3)"
-onlyCSC2 = "(SubsysID2_GMT == 3)"
-onlyRPC = "((SubsysID_GMT == 4) || (SubsysID_GMT == 5))"
-onlyRPC1 = "((SubsysID1_GMT == 4) || (SubsysID1_GMT == 5))"
-onlyRPC2 = "((SubsysID2_GMT == 4) || (SubsysID2_GMT == 5))"
+DTRPC1 = "(SubsysID1_GMT == 0)"
+DTRPC2 = "(SubsysID2_GMT == 0)"
+CSCRPC1 = "(SubsysID1_GMT == 1)"
+CSCRPC2 = "(SubsysID2_GMT == 1)"
+DT1 = "(SubsysID1_GMT == 2)"
+DT2 = "(SubsysID2_GMT == 2)"
+CSC1 = "(SubsysID1_GMT == 3)"
+CSC2 = "(SubsysID2_GMT == 3)"
+RPC1 = "((SubsysID1_GMT == 4) || (SubsysID1_GMT == 5))"
+RPC2 = "((SubsysID2_GMT == 4) || (SubsysID2_GMT == 5))"
 correctCharges = "(Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)"
 usableCharges = "(((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) ||\
     ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco)))"
@@ -627,9 +622,6 @@ cutDict["diMu-gmtPt1-forward_etagmt"] = [
     "(" + diMu_gmtPt1 + " && " + diMu_forwardRegion_gmt + ")",
     "DiGMTMu5_ForwardRegion"]
 
-
-# #TODO:0 Introduce cut dict producer method. (Takes list of cut strings and makes cut dict)
-
 # #TODO:0 Find better colours.
 DTconfirmed = kGreen - 2
 DTonly = kGreen - 9
@@ -637,26 +629,26 @@ CSCconfirmed = kBlue - 3
 CSConly = kBlue - 10
 RPC = kRed - 3
 
-cutDict["DTRPC"] = [bothDTRPC1, "DT+RPC", DTconfirmed]
-cutDict["DTRPC1"] = [bothDTRPC1, "DT+RPC", DTconfirmed]
-cutDict["DTRPC2"] = [bothDTRPC2, "DT+RPC", DTconfirmed]
-cutDict["CSCRPC"] = [bothCSCRPC1, "CSC+RPC", CSCconfirmed]
-cutDict["CSCRPC1"] = [bothCSCRPC1, "CSC+RPC", CSCconfirmed]
-cutDict["CSCRPC2"] = [bothCSCRPC2, "CSC+RPC", CSCconfirmed]
-cutDict["DT"] = [onlyDT1, "DT", DTonly]
-cutDict["DT1"] = [onlyDT1, "DT", DTonly]
-cutDict["DT2"] = [onlyDT2, "DT", DTonly]
-cutDict["CSC"] = [onlyCSC1, "CSC", CSConly]
-cutDict["CSC1"] = [onlyCSC1, "CSC", CSConly]
-cutDict["CSC2"] = [onlyCSC2, "CSC", CSConly]
+cutDict["DTRPC"] = [DTRPC1, "DT+RPC", DTconfirmed]
+cutDict["DTRPC1"] = [DTRPC1, "DT+RPC", DTconfirmed]
+cutDict["DTRPC2"] = [DTRPC2, "DT+RPC", DTconfirmed]
+cutDict["CSCRPC"] = [CSCRPC1, "CSC+RPC", CSCconfirmed]
+cutDict["CSCRPC1"] = [CSCRPC1, "CSC+RPC", CSCconfirmed]
+cutDict["CSCRPC2"] = [CSCRPC2, "CSC+RPC", CSCconfirmed]
+cutDict["DT"] = [DT1, "DT", DTonly]
+cutDict["DT1"] = [DT1, "DT", DTonly]
+cutDict["DT2"] = [DT2, "DT", DTonly]
+cutDict["CSC"] = [CSC1, "CSC", CSConly]
+cutDict["CSC1"] = [CSC1, "CSC", CSConly]
+cutDict["CSC2"] = [CSC2, "CSC", CSConly]
 cutDict["RPC"] = [onlyRPC1, "RPC", RPC]
 cutDict["RPC1"] = [onlyRPC1, "RPC", RPC]
 cutDict["RPC2"] = [onlyRPC2, "RPC", RPC]
 
 stackCutDict = {}
-stackCutDict["subsystems_mu"] = [cutDict["DTRPC"], cutDict[
-    "CSCRPC"], cutDict["DT"], cutDict["CSC"], cutDict["RPC"]]
-stackCutDict["subsystems_mu1"] = [cutDict["DTRPC1"], cutDict[
-    "CSCRPC1"], cutDict["DT1"], cutDict["CSC1"], cutDict["RPC1"]]
-stackCutDict["subsystems_mu2"] = [cutDict["DTRPC2"], cutDict[
-    "CSCRPC2"], cutDict["DT2"], cutDict["CSC2"], cutDict["RPC2"]]
+stackCutDict["subsystems_mu1"] = [cutDict["DTRPC1"], cutDict["CSCRPC1"],
+                                  cutDict["DT1"], cutDict["CSC1"],
+                                  cutDict["RPC1"]]
+stackCutDict["subsystems_mu2"] = [cutDict["DTRPC2"], cutDict["CSCRPC2"],
+                                  cutDict["DT2"], cutDict["CSC2"],
+                                  cutDict["RPC2"]]
