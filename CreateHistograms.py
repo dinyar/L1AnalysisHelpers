@@ -641,9 +641,9 @@ cutDict["DT2"] = [DT2, "DT", DTonly]
 cutDict["CSC"] = [CSC1, "CSC", CSConly]
 cutDict["CSC1"] = [CSC1, "CSC", CSConly]
 cutDict["CSC2"] = [CSC2, "CSC", CSConly]
-cutDict["RPC"] = [onlyRPC1, "RPC", RPC]
-cutDict["RPC1"] = [onlyRPC1, "RPC", RPC]
-cutDict["RPC2"] = [onlyRPC2, "RPC", RPC]
+cutDict["RPC"] = [RPC1, "RPC", RPC]
+cutDict["RPC1"] = [RPC1, "RPC", RPC]
+cutDict["RPC2"] = [RPC2, "RPC", RPC]
 
 stackCutDict = {}
 stackCutDict["subsystems_mu1"] = [cutDict["DTRPC1"], cutDict["CSCRPC1"],
