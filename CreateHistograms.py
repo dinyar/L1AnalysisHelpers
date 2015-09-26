@@ -55,16 +55,16 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     # Create cut string
     cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
 
+    recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
+    passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1],
+                    varList[1][2])
+    recoHist.Sumw2()
+    passHist.Sumw2()
+    ntuple.Project("recoHist", varList[2], varList[4][0])
+    ntuple.Project("passHist", varList[2], cutString[1])
     # Make dist histogram
     if ntupleMC_file == "":
         c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-        recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
-        passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1],
-                        varList[1][2])
-        recoHist.Sumw2()
-        passHist.Sumw2()
-        ntuple.Project("recoHist", varList[2], varList[4][0])
-        ntuple.Project("passHist", varList[2], cutString[1])
         recoHist.SetMinimum(0)
         recoHist.GetXaxis().SetTitle(varList[0])
         recoHist.GetYaxis().SetTitle("# of muons")
