@@ -56,65 +56,37 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
 
     # Make dist histogram
-    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-    recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
-    passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1],
-                    varList[1][2])
-    recoHist.Sumw2()
-    passHist.Sumw2()
-    ntuple.Project("recoHist", varList[2], varList[4][0])
-    ntuple.Project("passHist", varList[2], cutString[1])
-    recoHist.SetMinimum(0)
-    recoHist.GetXaxis().SetTitle(varList[0])
-    recoHist.GetYaxis().SetTitle("# of muons")
-    passHist.SetMinimum(0)
-    passHist.GetXaxis().SetTitle(varList[0])
-    passHist.GetYaxis().SetTitle("# of muons")
+    if ntupleMC_file == "":
+        c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
+        recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
+        passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1],
+                        varList[1][2])
+        recoHist.Sumw2()
+        passHist.Sumw2()
+        ntuple.Project("recoHist", varList[2], varList[4][0])
+        ntuple.Project("passHist", varList[2], cutString[1])
+        recoHist.SetMinimum(0)
+        recoHist.GetXaxis().SetTitle(varList[0])
+        recoHist.GetYaxis().SetTitle("# of muons")
+        passHist.SetMinimum(0)
+        passHist.GetXaxis().SetTitle(varList[0])
+        passHist.GetYaxis().SetTitle("# of muons")
 
-    recoHist.SetLineColor(kRed)
-    recoHist.Draw("E1HIST")
-    passHist.SetLineColor(kBlue)
-    passHist.Draw("E1HISTSAME")
-    legend = TLegend(0.55, 0.1, 0.9, 0.2)
-    legend.SetFillStyle(0)
-    # legend.SetTextSize(0.0275)
-    if ntupleMC_file != "":
-        legend.AddEntry(recoHist, "Reconstructed muons, data", "L")
-        legend.AddEntry(passHist, "Trigger muons, data", "L")
-        f = TFile.Open(ntupleMC_file)
-        ntuple = f.Get("ntuple")
-        recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
-                          varList[1][2])
-        passHistMC = TH1D("passHistMC", cutString[0], varList[1][0],
-                          varList[1][1], varList[1][2])
-        recoHistMC.Sumw2()
-        passHistMC.Sumw2()
-        ntuple.Project("recoHistMC", varList[2], varList[4][0])
-        ntuple.Project("passHistMC", varList[2], cutString[1])
-        recoHistMC.SetMinimum(0)
-        recoHistMC.GetXaxis().SetTitle(varList[0])
-        recoHistMC.GetYaxis().SetTitle("# of muons")
-        passHistMC.SetMinimum(0)
-        passHistMC.GetXaxis().SetTitle(varList[0])
-        passHistMC.GetYaxis().SetTitle("# of muons")
+        recoHist.SetLineColor(kRed)
+        recoHist.Draw("E1HIST")
+        passHist.SetLineColor(kBlue)
+        passHist.Draw("E1HISTSAME")
+        legend = TLegend(0.55, 0.1, 0.9, 0.2)
+        legend.SetFillStyle(0)
+        # legend.SetTextSize(0.0275)
+        legend.AddEntry(recoHist, "No OS requirement", "L")
+        legend.AddEntry(passHist, "OS required", "L")
 
-        recoHistMC.SetLineColor(kRed)
-        recoHistMC.SetLineStyle(3)
-        recoHistMC.Draw("E1HISTSAME")
-        passHistMC.SetLineColor(kBlue)
-        passHistMC.SetLineStyle(3)
-        passHistMC.Draw("E1HISTSAME")
-        legend.AddEntry(recoHistMC, "Reconstructed muons, MC", "L")
-        legend.AddEntry(passHistMC, "Trigger muons, MC", "L")
-    else:
-        legend.AddEntry(recoHist, "Reconstructed muons", "L")
-        legend.AddEntry(passHist, "Trigger muons", "L")
-
-    legend.Draw("SAME")
-    distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0] + descrWOspaces +\
-                    varList[4][1]
-    c1.Print(distCompTitle + ".png")
-    c1.Print(distCompTitle + ".pdf")
+        legend.Draw("SAME")
+        distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0] + descrWOspaces +\
+                        varList[4][1]
+        c1.Print(distCompTitle + ".png")
+        c1.Print(distCompTitle + ".pdf")
 
     # Make efficiency histogram
     # Get ntuple
