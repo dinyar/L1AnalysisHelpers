@@ -64,10 +64,12 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     passHist.Sumw2()
     ntuple.Project("recoHist", varList[2], varList[4][0])
     ntuple.Project("passHist", varList[2], cutString[1])
+    recoHist.SetMinimum(0)
     recoHist.GetXaxis().SetTitle(varList[0])
-    recoHist.GetYaxis().SetTitle("Counts")
+    recoHist.GetYaxis().SetTitle("# of muons")
+    passHist.SetMinimum(0)
     passHist.GetXaxis().SetTitle(varList[0])
-    passHist.GetYaxis().SetTitle("Counts")
+    passHist.GetYaxis().SetTitle("# of muons")
 
     recoHist.SetLineColor(kRed)
     recoHist.Draw("E1HIST")
@@ -76,18 +78,48 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     legend = TLegend(0.55, 0.1, 0.9, 0.2)
     legend.SetFillStyle(0)
     # legend.SetTextSize(0.0275)
-    legend.AddEntry(recoHist,
-                    "Reconstructed muons", "L")
-    legend.AddEntry(passHist,
-                    "Trigger muons", "L")
+    if ntupleMC_file != "":
+        legend.AddEntry(recoHist, "Reconstructed muons, data", "L")
+        legend.AddEntry(passHist, "Trigger muons, data", "L")
+        f = TFile.Open(ntupleMC_file)
+        ntuple = f.Get("ntuple")
+        recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1], varList[1][2])
+        passHistMC = TH1D("passHistMC", cutString[0], varList[1][0], varList[1][1],
+                        varList[1][2])
+        recoHistMC.Sumw2()
+        passHistMC.Sumw2()
+        ntuple.Project("recoHistMC", varList[2], varList[4][0])
+        ntuple.Project("passHistMC", varList[2], cutString[1])
+        recoHistMC.SetMinimum(0)
+        recoHistMC.GetXaxis().SetTitle(varList[0])
+        recoHistMC.GetYaxis().SetTitle("# of muons")
+        passHistMC.SetMinimum(0)
+        passHistMC.GetXaxis().SetTitle(varList[0])
+        passHistMC.GetYaxis().SetTitle("# of muons")
+
+        recoHistMC.SetLineColor(kRed)
+        recoHistMC.SetLineStyle(2)
+        recoHistMC.Draw("E1HIST")
+        passHistMC.SetLineColor(kBlue)
+        passHistMC.SetLineStyle(2)
+        passHistMC.Draw("E1HISTSAME")
+        legend.AddEntry(recoHistMC, "Reconstructed muons, MC", "L")
+        legend.AddEntry(passHistMC, "Trigger muons, MC", "L")
+    else:
+        legend.AddEntry(recoHist, "Reconstructed muons", "L")
+        legend.AddEntry(passHist, "Trigger muons", "L")
+
     legend.Draw("SAME")
-    # #TODO:0 Need to handle this in case we're doing combination plots.
     distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0] + descrWOspaces +\
                     varList[4][1]
     c1.Print(distCompTitle + ".png")
     c1.Print(distCompTitle + ".pdf")
 
     # Make efficiency histogram
+    # Get ntuple
+    f = TFile.Open(ntuple_file)
+    ntuple = f.Get("ntuple")
+
     c2 = TCanvas('c2', canvasTitle, 200, 10, 700, 500)
 
     finGraph = TGraphAsymmErrors()
