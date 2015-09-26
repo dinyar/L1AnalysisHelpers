@@ -83,9 +83,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         legend.AddEntry(passHist, "Trigger muons, data", "L")
         f = TFile.Open(ntupleMC_file)
         ntuple = f.Get("ntuple")
-        recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1], varList[1][2])
-        passHistMC = TH1D("passHistMC", cutString[0], varList[1][0], varList[1][1],
-                        varList[1][2])
+        recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
+                          varList[1][2])
+        passHistMC = TH1D("passHistMC", cutString[0], varList[1][0],
+                          varList[1][1], varList[1][2])
         recoHistMC.Sumw2()
         passHistMC.Sumw2()
         ntuple.Project("recoHistMC", varList[2], varList[4][0])
@@ -98,10 +99,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         passHistMC.GetYaxis().SetTitle("# of muons")
 
         recoHistMC.SetLineColor(kRed)
-        recoHistMC.SetLineStyle(2)
-        recoHistMC.Draw("E1HIST")
+        recoHistMC.SetLineStyle(3)
+        recoHistMC.Draw("E1HISTSAME")
         passHistMC.SetLineColor(kBlue)
-        passHistMC.SetLineStyle(2)
+        passHistMC.SetLineStyle(3)
         passHistMC.Draw("E1HISTSAME")
         legend.AddEntry(recoHistMC, "Reconstructed muons, MC", "L")
         legend.AddEntry(passHistMC, "Trigger muons, MC", "L")
@@ -143,7 +144,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         f = TFile.Open(ntupleMC_file)
         ntuple = f.Get("ntuple")
         recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
-                         varList[1][2])
+                          varList[1][2])
         passHistMC = TH1D("passHistMC", cutString[0], varList[1][0],
                           varList[1][1], varList[1][2])
         recoHistMC.Sumw2()
@@ -629,19 +630,14 @@ CSCconfirmed = kBlue - 3
 CSConly = kBlue - 10
 RPC = kRed - 3
 
-cutDict["DTRPC"] = [DTRPC1, "DT+RPC", DTconfirmed]
 cutDict["DTRPC1"] = [DTRPC1, "DT+RPC", DTconfirmed]
 cutDict["DTRPC2"] = [DTRPC2, "DT+RPC", DTconfirmed]
-cutDict["CSCRPC"] = [CSCRPC1, "CSC+RPC", CSCconfirmed]
 cutDict["CSCRPC1"] = [CSCRPC1, "CSC+RPC", CSCconfirmed]
 cutDict["CSCRPC2"] = [CSCRPC2, "CSC+RPC", CSCconfirmed]
-cutDict["DT"] = [DT1, "DT", DTonly]
 cutDict["DT1"] = [DT1, "DT", DTonly]
 cutDict["DT2"] = [DT2, "DT", DTonly]
-cutDict["CSC"] = [CSC1, "CSC", CSConly]
 cutDict["CSC1"] = [CSC1, "CSC", CSConly]
 cutDict["CSC2"] = [CSC2, "CSC", CSConly]
-cutDict["RPC"] = [RPC1, "RPC", RPC]
 cutDict["RPC1"] = [RPC1, "RPC", RPC]
 cutDict["RPC2"] = [RPC2, "RPC", RPC]
 
