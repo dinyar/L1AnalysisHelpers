@@ -83,7 +83,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         legend.Draw("SAME")
         distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] + descrWOspaces +\
                         varList[4][1]
-        c1.Print(distCompTitle + ".png")
+        # c1.Print(distCompTitle + ".png")
         c1.Print(distCompTitle + ".pdf")
 
     # Make efficiency histogram
@@ -162,7 +162,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         combString + ".png"
 
     c2.Print(filename_pdf)
-    c2.Print(filename_png)
+    # c2.Print(filename_png)
 
 
 # varlist entries:
@@ -228,7 +228,7 @@ def generateEfficiencyStack(varList, ntuple_file, dataset=""):
     legend.Draw("")
     c1.Update()
     c1.Print(filename_pdf)
-    c1.Print(filename_png)
+    # c1.Print(filename_png)
 
 
 # varlist entries:
@@ -286,7 +286,7 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset="",
     filename_png = "plots/dist_" + dataset + datasetMC +\
         varList[0][0] + "_" + varList[3][1] + combString + ".png"
     c1.Print(filename_pdf)
-    c1.Print(filename_png)
+    # c1.Print(filename_png)
 
 
 # varlist entries:
@@ -337,7 +337,7 @@ def generateRateStack(varList, ntuple_file, dataset=""):
     legend.Draw("")
     c1.Update()
     c1.Print(filename_pdf)
-    c1.Print(filename_png)
+    # c1.Print(filename_png)
 
 
 # varlist entries:
@@ -378,7 +378,7 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
     filename_png = "plots/hist2D_eff_" + dataset + varList[0][0] + descrWOspaces +\
         varList[5][1] + ".png"
     c1.Print(filename_pdf)
-    c1.Print(filename_png)
+    # c1.Print(filename_png)
 
 
 # varlist entries:
@@ -411,7 +411,7 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
     filename_png = "plots/hist2D_dist_" + dataset + varList[0][0] + "_" +\
         varList[4][1] + ".png"
     c1.Print(filename_pdf)
-    c1.Print(filename_png)
+    # c1.Print(filename_png)
 
 
 # varlist entries:
@@ -582,7 +582,7 @@ cutDict["diMu-gmtPt1-mass3to32-central_etagmt"] = [
 cutDict["diMu-gmtPt1-mass3to32-central_etagmt_cs"] = [
     "(" + diMu_gmtPt1 + " && " + correctCharges + " && " +
     mass3to32 + " && " + diMu_centralRegion_gmt + ")",
-    "DiGMTMu5_CentralRegion_UsableSign"]
+    "DiGMTMu5_CentralRegion_CorrectSign"]
 cutDict["diMu-gmtPt1-mass3to32-central_etagmt_us"] = [
     "(" + diMu_gmtPt1 + " && " + usableCharges + " && " +
     mass3to32 + " && " + diMu_centralRegion_gmt + ")",
