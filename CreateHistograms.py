@@ -47,16 +47,14 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1] + ", "
     descrWOspaces = "_" + varList[3][1] + "_"
-    canvasTitle = typeStrings[0] + " vs. " + varList[0] + descrWspaces +\
-        varList[4][1]
-    histTitle = typeStrings[0] + " vs. " + varList[0] + descrWspaces +\
-        varList[4][1]
+    canvasTitle = ""
+    histTitle = ""
 
     # Create cut string
     cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
 
     recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
-    passHist = TH1D("passHist", cutString[0], varList[1][0], varList[1][1],
+    passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
                     varList[1][2])
     recoHist.Sumw2()
     passHist.Sumw2()
@@ -66,10 +64,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     if ntupleMC_file == "":
         c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
         recoHist.SetMinimum(0)
-        recoHist.GetXaxis().SetTitle(varList[0])
+        recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
         passHist.SetMinimum(0)
-        passHist.GetXaxis().SetTitle(varList[0])
+        passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
 
         recoHist.SetLineColor(kRed)
@@ -83,7 +81,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         legend.AddEntry(passHist, "OS required", "L")
 
         legend.Draw("SAME")
-        distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0] + descrWOspaces +\
+        distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] + descrWOspaces +\
                         varList[4][1]
         c1.Print(distCompTitle + ".png")
         c1.Print(distCompTitle + ".pdf")
@@ -96,13 +94,13 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     c2 = TCanvas('c2', canvasTitle, 200, 10, 700, 500)
 
     finGraph = TGraphAsymmErrors()
-    finHist = TH1D("finHist", histTitle, varList[1][0], varList[1][1],
+    finHist = TH1D("finHist", "", varList[1][0], varList[1][1],
                    varList[1][2])
     finHist.Divide(passHist, recoHist, 1.0, 1.0)
     finHist.SetMinimum(minYAxis)
     finHist.SetMaximum(maxYAxis)
     finGraph.Divide(passHist, recoHist)
-    finHist.GetXaxis().SetTitle(varList[0])
+    finHist.GetXaxis().SetTitle(varList[0][1])
     finHist.GetYaxis().SetTitle(typeStrings[0])
     finHist.Draw("hist")
     # passHist.Draw("E1,SAME")
@@ -117,14 +115,14 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         ntuple = f.Get("ntuple")
         recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
                           varList[1][2])
-        passHistMC = TH1D("passHistMC", cutString[0], varList[1][0],
+        passHistMC = TH1D("passHistMC", "", varList[1][0],
                           varList[1][1], varList[1][2])
         recoHistMC.Sumw2()
         ntuple.Project("recoHistMC", varList[2], varList[4][0])
         ntuple.Project("passHistMC", varList[2], cutString[1])
 
         finGraphMC = TGraphAsymmErrors()
-        finHistMC = TH1D("finHistMC", histTitle, varList[1][0], varList[1][1],
+        finHistMC = TH1D("finHistMC", "", varList[1][0], varList[1][1],
                          varList[1][2])
         finHistMC.Divide(passHistMC, recoHistMC, 1.0, 1.0)
         finHistMC.SetMinimum(minYAxis)
@@ -157,10 +155,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     if (datasetMC != "") and (datasetMC != "MC"):
         datasetMC += "_"
     filename_pdf = "plots/" + typeStrings[1] + "_" +\
-        dataset + datasetMC + varList[0] + descrWOspaces + varList[4][1] +\
+        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[4][1] +\
         combString + ".pdf"
     filename_png = "plots/" + typeStrings[1] + "_" +\
-        dataset + datasetMC + varList[0] + descrWOspaces + varList[4][1] +\
+        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[4][1] +\
         combString + ".png"
 
     c2.Print(filename_pdf)
@@ -193,12 +191,11 @@ def generateEfficiencyStack(varList, ntuple_file, dataset=""):
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1] + ", "
     descrWOspaces = "_" + varList[3][1] + "_"
-    canvasTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[4][1]
-    stackTitle = "Efficiency vs. " + varList[0] + descrWspaces + varList[4][1]
+    canvasTitle = ""
+    stackTitle = ""
 
     c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-    histStack = THStack("histStack", stackTitle + ";" + varList[0] +
-                        ";Efficiency")
+    histStack = THStack("histStack", "")
     tmpHist = TH1D("tmpHist", "", varList[1][0], varList[1][1], varList[1][2])
     ntuple.Project("tmpHist", varList[2], varList[4][0])
 
@@ -212,13 +209,13 @@ def generateEfficiencyStack(varList, ntuple_file, dataset=""):
     if dataset != "":
         dataset += "_"
 
-    filename_pdf = "plots/eff_" + dataset + "stack_" + varList[0] +\
+    filename_pdf = "plots/eff_" + dataset + "stack_" + varList[0][0] +\
         descrWOspaces + varList[4][1] + ".pdf"
-    filename_png = "plots/eff_" + dataset + "stack_" + varList[0] +\
+    filename_png = "plots/eff_" + dataset + "stack_" + varList[0][0] +\
         descrWOspaces + varList[4][1] + ".png"
 
     for cutString in cutStrings:
-        efficiencyHist = TH1D("effHist", cutString[0], varList[1][0],
+        efficiencyHist = TH1D("effHist", "", varList[1][0],
                               varList[1][1], varList[1][2])
         ntuple.Project("effHist", varList[2], cutString[1])
         efficiencyHist.Divide(tmpHist)
@@ -250,13 +247,11 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset="",
     f = TFile.Open(ntuple_file)
     ntuple = f.Get("ntuple")
 
-    c1 = TCanvas('c1', "Distribution of " + varList[0] + " - " + varList[3][1],
-                 200, 10, 700, 500)
-    rateHist = TH1D("rateHist",
-                    "Distribution of " + varList[0] + " - " + varList[3][1],
+    c1 = TCanvas('c1', "", 200, 10, 700, 500)
+    rateHist = TH1D("rateHist", "",
                     varList[1][0], varList[1][1], varList[1][2])
     ntuple.Project("rateHist", varList[2], varList[3][0])
-    rateHist.GetXaxis().SetTitle(varList[0])
+    rateHist.GetXaxis().SetTitle(varList[0][1])
     rateHist.Draw("hist")
 
     if ntupleMC_file != "":
@@ -264,12 +259,10 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset="",
         fMC = TFile.Open(ntupleMC_file)
         ntuple = fMC.Get("ntuple")
 
-        rateHistMC = TH1D("rateHistMC",
-                          "Distribution of " + varList[0] + " - " +
-                          varList[3][1], varList[1][0], varList[1][1],
-                          varList[1][2])
+        rateHistMC = TH1D("rateHistMC", "",
+                          varList[1][0], varList[1][1], varList[1][2])
         ntuple.Project("rateHistMC", varList[2], varList[3][0])
-        rateHistMC.GetXaxis().SetTitle(varList[0])
+        rateHistMC.GetXaxis().SetTitle(varList[0][1])
         rateHistMC.SetLineColor(kRed)
         rateHistMC.Draw("hist,SAME")
 
@@ -289,9 +282,9 @@ def generateCombinedRateHist(varList, ntuple_file, ntupleMC_file, dataset="",
     if datasetMC != "":
         datasetMC += "_"
     filename_pdf = "plots/dist_" + dataset + datasetMC +\
-        varList[0] + "_" + varList[3][1] + combString + ".pdf"
+        varList[0][0] + "_" + varList[3][1] + combString + ".pdf"
     filename_png = "plots/dist_" + dataset + datasetMC +\
-        varList[0] + "_" + varList[3][1] + combString + ".png"
+        varList[0][0] + "_" + varList[3][1] + combString + ".png"
     c1.Print(filename_pdf)
     c1.Print(filename_png)
 
@@ -314,10 +307,10 @@ def generateRateStack(varList, ntuple_file, dataset=""):
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1]
     descrWOspaces = "_" + varList[3][1]
-    title = "Distribution of " + varList[0] + descrWspaces
+    title = ""
 
     c1 = TCanvas('c1', title, 200, 10, 700, 500)
-    histStack = THStack("histStack", title + ";" + varList[0] + ";Events")
+    histStack = THStack("histStack", "")
 
     # Create cut strings
     cutStrings = []
@@ -328,9 +321,9 @@ def generateRateStack(varList, ntuple_file, dataset=""):
 
     if dataset != "":
         dataset += "_"
-    filename_pdf = "plots/dist_" + dataset + "stack_" + varList[0] +\
+    filename_pdf = "plots/dist_" + dataset + "stack_" + varList[0][0] +\
         descrWOspaces + ".pdf"
-    filename_png = "plots/dist_" + dataset + "stack_" + varList[0] +\
+    filename_png = "plots/dist_" + dataset + "stack_" + varList[0][0] +\
         descrWOspaces + ".png"
 
     for cutString in cutStrings:
@@ -363,12 +356,10 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
 
     descrWspaces = " - " + varList[4][1] + ", "
     descrWOspaces = "_" + varList[4][1] + "_"
-    c1 = TCanvas('c1',
-                 "Efficiency vs. " + varList[0] + descrWspaces + varList[5][1],
-                 200, 10, 700, 500)
+    c1 = TCanvas('c1', "", 200, 10, 700, 500)
     tmpHist = TH2D("tmpHist", "", varList[1][0], varList[1][1], varList[1][2],
                    varList[2][0], varList[2][1], varList[2][2])
-    efficiencyHist = TH2D("effHist", varList[0] + descrWspaces + varList[5][1],
+    efficiencyHist = TH2D("effHist", "",
                           varList[1][0], varList[1][1], varList[1][2],
                           varList[2][0], varList[2][1], varList[2][2])
     ntuple.Project("tmpHist", varList[3], varList[5][0])
@@ -382,9 +373,9 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename_pdf = "plots/hist2D_eff_" + dataset + varList[0] + descrWOspaces +\
+    filename_pdf = "plots/hist2D_eff_" + dataset + varList[0][0] + descrWOspaces +\
         varList[5][1] + ".pdf"
-    filename_png = "plots/hist2D_eff_" + dataset + varList[0] + descrWOspaces +\
+    filename_png = "plots/hist2D_eff_" + dataset + varList[0][0] + descrWOspaces +\
         varList[5][1] + ".png"
     c1.Print(filename_pdf)
     c1.Print(filename_png)
@@ -403,9 +394,8 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
     f = TFile.Open(ntuple_file)
     ntuple = f.Get("ntuple")
 
-    c1 = TCanvas('c1', "Distribution of " + varList[0] + " - " + varList[4][1],
-                 200, 10, 700, 500)
-    rateHist = TH2D("rateHist", varList[0] + " - " + varList[4][1],
+    c1 = TCanvas('c1', "", 200, 10, 700, 500)
+    rateHist = TH2D("rateHist", "",
                     varList[1][0], varList[1][1], varList[1][2], varList[2][0],
                     varList[2][1], varList[2][2])
     ntuple.Project("rateHist", varList[3], varList[4][0])
@@ -416,9 +406,9 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename_pdf = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
+    filename_pdf = "plots/hist2D_dist_" + dataset + varList[0][0] + "_" +\
         varList[4][1] + ".pdf"
-    filename_png = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
+    filename_png = "plots/hist2D_dist_" + dataset + varList[0][0] + "_" +\
         varList[4][1] + ".png"
     c1.Print(filename_pdf)
     c1.Print(filename_png)
