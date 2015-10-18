@@ -493,9 +493,13 @@ CSC1 = "(SubsysID1_GMT == 3)"
 CSC2 = "(SubsysID2_GMT == 3)"
 RPC1 = "((SubsysID1_GMT == 4) || (SubsysID1_GMT == 5))"
 RPC2 = "((SubsysID2_GMT == 4) || (SubsysID2_GMT == 5))"
+
 correctCharges = "(Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)"
 usableCharges = "(((Ch1_GMT == Ch1_reco) && (Ch2_GMT == Ch2_reco)) ||\
     ((Ch1_GMT != Ch1_reco) && (Ch2_GMT != Ch2_reco)))"
+
+mass3to32 = "(InvMass_dimuon >= 3) && (InvMass_dimuon <= 3.2)"
+
 diMu_barrelRegion = "((abs(Eta1_reco) <= 0.8) && (abs(Eta2_reco) <= 0.8))"
 diMu_overlapRegion = "((abs(Eta1_reco) > 0.8) && (abs(Eta1_reco) < 1.3) &&\
     (abs(Eta2_reco) > 0.8) && (abs(Eta2_reco) < 1.3))"
@@ -555,18 +559,29 @@ cutDict["diMu-recoPt5-ovl"] = ["(" + diMu_recoPt5 +
 cutDict["diMu-recoPt5-fwd"] = ["(" + diMu_recoPt5 +
                                " && " + diMu_forwardRegion + ")",
                                "DiGMTMu5_ForwardRegion"]
-cutDict["diMu-recoPt5-central"] = [
-    "(" + diMu_recoPt5 + " && " + diMu_centralRegion + ")",
-    "DiGMTMu5_CentralRegion"]
 cutDict["diMu-recoPt5-forward"] = [
     "(" + diMu_recoPt5 + " && " + diMu_forwardRegion + ")",
     "DiGMTMu5_ForwardRegion"]
-
+cutDict["diMu-gmtPt1-forward_etagmt"] = [
+    "(" + diMu_gmtPt1 + " && " + diMu_forwardRegion_gmt + ")",
+    "DiGMTMu5_ForwardRegion"]
+cutDict["diMu-recoPt5-central"] = [
+    "(" + diMu_recoPt5 + " && " + diMu_centralRegion + ")",
+    "DiGMTMu5_CentralRegion"]
 cutDict["diMu-gmtPt1-central_etagmt"] = [
     "(" + diMu_gmtPt1 + " && " + diMu_centralRegion_gmt + ")",
     "DiGMTMu5_CentralRegion"]
 cutDict["diMu-gmtPt1-central_etagmt_us"] = [
-    "(" + diMu_gmtPt1 + " && " + usableCharges + " && " + diMu_centralRegion_gmt + ")",
+    "(" + diMu_gmtPt1 + " && " + usableCharges + " && " +
+    diMu_centralRegion_gmt + ")",
+    "DiGMTMu5_CentralRegion_UsableSign"]
+cutDict["diMu-gmtPt1-mass3to32-central_etagmt"] = [
+    "(" + diMu_gmtPt1 + " && " + diMu_centralRegion_gmt + " && " +
+    mass3to32 + " && " + ")",
+    "DiGMTMu5_CentralRegion"]
+cutDict["diMu-gmtPt1-mass3to32-central_etagmt_us"] = [
+    "(" + diMu_gmtPt1 + " && " + usableCharges + " && " +
+    mass3to32 + " && " + diMu_centralRegion_gmt + ")",
     "DiGMTMu5_CentralRegion_UsableSign"]
 
 cutDict["jpsi-Pt1-central"] = ["(" + jPsiPt1 + " && " +
@@ -580,10 +595,21 @@ cutDict["jpsi-Pt1-central_us"] = ["(" + jPsiPt1 + " && " +
                                   diMu_centralRegion_gmt +
                                   " && " + usableCharges + ")",
                                   "JPsi1_CentralRegion_UsableSign"]
+cutDict["jpsi-Pt1-mass3to32-central"] = ["(" + jPsiPt1 + " && " + mass3to32 +
+                                         " && " + diMu_centralRegion_gmt + ")",
+                                         "JPsi1_CentralRegion"]
+cutDict["jpsi-Pt1-mass3to32-central_cs"] = ["(" + jPsiPt1 + " && " +
+                                            mass3to32 + " && " +
+                                            diMu_centralRegion_gmt +
+                                            " && " + correctCharges + ")",
+                                            "JPsi1_CentralRegion_CorrectSign"]
+cutDict["jpsi-Pt1-mass3to32-central_us"] = ["(" + jPsiPt1 + " && " +
+                                            mass3to32 + " && " +
+                                            diMu_centralRegion_gmt +
+                                            " && " + usableCharges + ")",
+                                            "JPsi1_CentralRegion_UsableSign"]
 
-cutDict["diMu-gmtPt1-forward_etagmt"] = [
-    "(" + diMu_gmtPt1 + " && " + diMu_forwardRegion_gmt + ")",
-    "DiGMTMu5_ForwardRegion"]
+
 
 # #TODO:0 Find better colours.
 DTconfirmed = kGreen - 2
