@@ -579,7 +579,7 @@ cutDict["diMu-gmtPt1-mass3to32-central_etagmt"] = [
     "(" + diMu_gmtPt1 + " && " + diMu_centralRegion_gmt +
     " && " + mass3to32 + ")",
     "DiGMTMu5_CentralRegion"]
-cutDict["diMu-gmtPt1-mass3to32-central_etagmt_us"] = [
+cutDict["diMu-gmtPt1-mass3to32-central_etagmt_cs"] = [
     "(" + diMu_gmtPt1 + " && " + correctCharges + " && " +
     mass3to32 + " && " + diMu_centralRegion_gmt + ")",
     "DiGMTMu5_CentralRegion_UsableSign"]
