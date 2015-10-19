@@ -528,6 +528,17 @@ cutDict["diMu-gmtPt1_cs"] = ["(" + diMu_gmtPt1 + " && " + correctCharges + ")",
                              "DiGMTMu1_CorrectSign"]
 cutDict["diMu-gmtPt1_us"] = ["(" + diMu_gmtPt1 + " && " + usableCharges + ")",
                              "DiGMTMu1_UsableSign"]
+cutDict["diMu-gmtPt1-mass3to32"] = ["(" + diMu_gmtPt1 + " && " +
+                                    mass3to32 + ")",
+                                    "DiGMTMu1_Mass3to32"]
+cutDict["diMu-gmtPt1-mass3to32_cs"] = ["(" + diMu_gmtPt1 + " && " +
+                                       mass3to32 + " && " +
+                                       correctCharges + ")",
+                                       "DiGMTMu1_Mass3to32_CorrectSign"]
+cutDict["diMu-gmtPt1-mass3to32_us"] = ["(" + diMu_gmtPt1 + " && " +
+                                       mass3to32 + " && " +
+                                       usableCharges + ")",
+                                       "DiGMTMu1_Mass3to32_UsableSign"]
 
 cutDict["diMu-gmtPt5"] = [diMu_gmtPt5, "DiGMTMu5"]
 cutDict["diMu-gmtPt5_cs"] = ["(" + diMu_gmtPt5 + " && " + correctCharges + ")",
@@ -578,15 +589,15 @@ cutDict["diMu-gmtPt1-central_etagmt_us"] = [
 cutDict["diMu-gmtPt1-mass3to32-central_etagmt"] = [
     "(" + diMu_gmtPt1 + " && " + diMu_centralRegion_gmt +
     " && " + mass3to32 + ")",
-    "DiGMTMu5_CentralRegion"]
+    "DiGMTMu5_Mass3to32_CentralRegion"]
 cutDict["diMu-gmtPt1-mass3to32-central_etagmt_cs"] = [
     "(" + diMu_gmtPt1 + " && " + correctCharges + " && " +
     mass3to32 + " && " + diMu_centralRegion_gmt + ")",
-    "DiGMTMu5_CentralRegion_CorrectSign"]
+    "DiGMTMu5_Mass3to32_CentralRegion_CorrectSign"]
 cutDict["diMu-gmtPt1-mass3to32-central_etagmt_us"] = [
     "(" + diMu_gmtPt1 + " && " + usableCharges + " && " +
     mass3to32 + " && " + diMu_centralRegion_gmt + ")",
-    "DiGMTMu5_CentralRegion_UsableSign"]
+    "DiGMTMu5_Mass3to32_CentralRegion_UsableSign"]
 
 cutDict["jpsi-Pt1-central"] = ["(" + jPsiPt1 + " && " +
                                diMu_centralRegion_gmt + ")",
@@ -601,17 +612,17 @@ cutDict["jpsi-Pt1-central_us"] = ["(" + jPsiPt1 + " && " +
                                   "JPsi1_CentralRegion_UsableSign"]
 cutDict["jpsi-Pt1-mass3to32-central"] = ["(" + jPsiPt1 + " && " + mass3to32 +
                                          " && " + diMu_centralRegion_gmt + ")",
-                                         "JPsi1_CentralRegion"]
+                                         "JPsi1_Mass3to32_CentralRegion"]
 cutDict["jpsi-Pt1-mass3to32-central_cs"] = ["(" + jPsiPt1 + " && " +
                                             mass3to32 + " && " +
                                             diMu_centralRegion_gmt +
                                             " && " + correctCharges + ")",
-                                            "JPsi1_CentralRegion_CorrectSign"]
+                                            "JPsi1_Mass3to32_CentralRegion_CorrectSign"]
 cutDict["jpsi-Pt1-mass3to32-central_us"] = ["(" + jPsiPt1 + " && " +
                                             mass3to32 + " && " +
                                             diMu_centralRegion_gmt +
                                             " && " + usableCharges + ")",
-                                            "JPsi1_CentralRegion_UsableSign"]
+                                            "JPsi1_Mass3to32_CentralRegion_UsableSign"]
 
 
 
