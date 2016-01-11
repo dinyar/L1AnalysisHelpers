@@ -32,7 +32,7 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 
 
 def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
-                          ntuple_names, distribution_labels):
+                          ntuple_names, distribution_labels, line_colours):
     if len(varList) < 7:
         minYAxis = 0
         maxYAxis = 1
@@ -63,9 +63,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
                            varList[4][0] + " && " + varList[5][0]])
 
     c = TCanvas('c', canvasTitle, 200, 10, 700, 500)
-    for ntuple, dataset, dist_label, cutString in zip(ntuples, datasets,
-                                                      distribution_labels,
-                                                      cutStrings):
+    for ntuple, dataset, dist_label, cutString, line_colour in zip(ntuples,
+                                                                   datasets,
+                                                                   distribution_labels,
+                                                                   cutStrings,
+                                                                   line_colours):
         recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1],
                         varList[1][2])
         passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
@@ -110,8 +112,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         finHist.GetYaxis().SetTitle(typeStrings[0])
         finHist.Draw("hist")
         # passHist.Draw("E1,SAME")
-        finGraph.SetLineColor(38)
-        finGraph.SetMarkerColor(38)
+        finGraph.SetLineColor(line_colour)
+        finGraph.SetMarkerColor(line_colour)
         finGraph.Draw("p,SAME")
         finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
 
