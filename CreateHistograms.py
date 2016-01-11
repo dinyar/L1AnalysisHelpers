@@ -31,9 +31,8 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
                           dataset=dataset)
 
 
-def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
-                          dataset="", datasetMC="", ntuple_name="ntuple",
-                          ntupleMC_name="ntuple"):
+def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
+                          ntuple_names, distribution_labels):
     if len(varList) < 7:
         minYAxis = 0
         maxYAxis = 1
@@ -43,130 +42,104 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
 
     gStyle.SetOptStat(0)
 
-    # Get ntuple
-    f = TFile.Open(ntuple_file)
-    ntuple = f.Get(ntuple_name)
+    # Get ntuples
+    files = []
+    ntuples = []
+    for ntuple_file, ntuple_name in zip(ntuple_files, ntuple_names):
+        f = TFile.Open(ntuple_file)
+        files.append(f)
+        ntuples.append(f.Get(ntuple_name))
 
     # Create descriptive strings
-    descrWspaces = " - " + varList[3][1] + ", "
     descrWOspaces = "_" + varList[3][1] + "_"
     canvasTitle = ""
-    histTitle = ""
 
     # Create cut string
-    cutString = [varList[3][1], varList[3][0] + " && " + varList[5][0]]
-    cutStringMC = [varList[4][1], varList[4][0] + " && " + varList[5][0]]
+    cutStrings = []
+    for ntuple in ntuples:
+        cutStrings.append([varList[3][1],
+                           varList[3][0] + " && " + varList[5][0]])
+        cutStrings.append([varList[4][1],
+                           varList[4][0] + " && " + varList[5][0]])
 
-    recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
-    passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
-                    varList[1][2])
-    recoHist.Sumw2()
-    passHist.Sumw2()
-    ntuple.Project("recoHist", varList[2], varList[5][0])
-    ntuple.Project("passHist", varList[2], cutString[1])
-    # Make dist histogram
-    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-    recoHist.SetMinimum(0)
-    recoHist.GetXaxis().SetTitle(varList[0][1])
-    recoHist.GetYaxis().SetTitle("# of muons")
-    passHist.SetMinimum(0)
-    passHist.GetXaxis().SetTitle(varList[0][1])
-    passHist.GetYaxis().SetTitle("# of muons")
+    c = TCanvas('c', canvasTitle, 200, 10, 700, 500)
+    for ntuple, dataset, dist_label, cutString in zip(ntuples, datasets,
+                                                      distribution_labels,
+                                                      cutStrings):
+        recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1],
+                        varList[1][2])
+        passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
+                        varList[1][2])
+        recoHist.Sumw2()
+        passHist.Sumw2()
+        ntuple.Project("recoHist", varList[2], varList[5][0])
+        ntuple.Project("passHist", varList[2], cutString[1])
+        # Make dist histogram
+        c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
+        recoHist.SetMinimum(0)
+        recoHist.GetXaxis().SetTitle(varList[0][1])
+        recoHist.GetYaxis().SetTitle("# of muons")
+        passHist.SetMinimum(0)
+        passHist.GetXaxis().SetTitle(varList[0][1])
+        passHist.GetYaxis().SetTitle("# of muons")
 
-    recoHist.SetLineColor(kRed)
-    recoHist.Draw("E1HIST")
-    passHist.SetLineColor(kBlue)
-    passHist.Draw("E1HISTSAME")
-    legend = TLegend(0.55, 0.1, 0.9, 0.2)
-    legend.SetFillStyle(0)
-    # legend.SetTextSize(0.0275)
-    # TODO: Make these strings configurable
-    legend.AddEntry(recoHist, "Reco muons", "L")
-    legend.AddEntry(passHist, "GMT muons", "L")
-
-    legend.Draw("SAME")
-    distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] + descrWOspaces +\
-                    varList[5][1]
-    # c1.Print(distCompTitle + ".png")
-    c1.Print(distCompTitle + ".pdf")
-
-    # Make efficiency histogram
-    # Get ntuple
-#    f = TFile.Open(ntuple_file)
-#    ntuple = f.Get(ntuple_name)
-
-    c2 = TCanvas('c2', canvasTitle, 200, 10, 700, 500)
-
-    finGraph = TGraphAsymmErrors()
-    finHist = TH1D("finHist", "", varList[1][0], varList[1][1],
-                   varList[1][2])
-    finHist.Divide(passHist, recoHist, 1.0, 1.0)
-    finHist.SetMinimum(minYAxis)
-    finHist.SetMaximum(maxYAxis)
-    finGraph.Divide(passHist, recoHist)
-    finHist.GetXaxis().SetTitle(varList[0][1])
-    finHist.GetYaxis().SetTitle(typeStrings[0])
-    finHist.Draw("hist")
-    # passHist.Draw("E1,SAME")
-    finGraph.SetLineColor(38)
-    finGraph.SetMarkerColor(38)
-    finGraph.Draw("p,SAME")
-    finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
-
-    if ntupleMC_file != "":
+        recoHist.SetLineColor(kRed)
+        recoHist.Draw("E1HIST")
+        passHist.SetLineColor(kBlue)
+        passHist.Draw("E1HISTSAME")
         legend = TLegend(0.55, 0.1, 0.9, 0.2)
-        # legend.SetFillStyle(kWhite)
-        legend.AddEntry(finHist, dataset, "L")
+        legend.SetFillStyle(0)
+        # legend.SetTextSize(0.0275)
+        legend.AddEntry(recoHist, dist_label[0], "L")
+        legend.AddEntry(passHist, dist_label[1], "L")
 
-        # Get ntuple
-        fMC = TFile.Open(ntupleMC_file)
-        ntupleMC = fMC.Get(ntupleMC_name)
-        recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
-                          varList[1][2])
-        passHistMC = TH1D("passHistMC", "", varList[1][0],
-                          varList[1][1], varList[1][2])
-        recoHistMC.Sumw2()
-        ntupleMC.Project("recoHistMC", varList[2], varList[5][0])
-        ntupleMC.Project("passHistMC", varList[2], cutStringMC[1])
+        legend.Draw("SAME")
+        distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] +\
+                        descrWOspaces + varList[5][1]
+        c1.Print(distCompTitle + ".pdf")
 
-        finGraphMC = TGraphAsymmErrors()
-        finHistMC = TH1D("finHistMC", "", varList[1][0], varList[1][1],
-                         varList[1][2])
-        finHistMC.Divide(passHistMC, recoHistMC, 1.0, 1.0)
-        finHistMC.SetMinimum(minYAxis)
-        finHistMC.SetMaximum(maxYAxis)
-        finGraphMC.Divide(passHistMC, recoHistMC)
-        finHistMC.SetLineColor(kRed)
-        # finHistMC.Draw("HistMC, SAME")
-        # passHistMC.Draw("E1,SAME")
-        finGraphMC.SetLineColor(46)
-        finGraphMC.SetMarkerColor(46)
-        finGraphMC.Draw("p,SAME")
-        # Drawn again to cover horizontal error bars.
-        finHistMC.Draw("hist,SAME")
+        c.cd()
+        finGraph = TGraphAsymmErrors()
+        finHist = TH1D("finHist", "", varList[1][0], varList[1][1],
+                       varList[1][2])
+        finHist.Divide(passHist, recoHist, 1.0, 1.0)
+        finHist.SetMinimum(minYAxis)
+        finHist.SetMaximum(maxYAxis)
+        finGraph.Divide(passHist, recoHist)
+        finHist.GetXaxis().SetTitle(varList[0][1])
+        finHist.GetYaxis().SetTitle(typeStrings[0])
+        finHist.Draw("hist")
+        # passHist.Draw("E1,SAME")
+        finGraph.SetLineColor(38)
+        finGraph.SetMarkerColor(38)
+        finGraph.Draw("p,SAME")
+        finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
 
-        legend.AddEntry(finHistMC, datasetMC, "L")
-        legend.Draw()
+        if len(ntuple_files) > 1:
+            legend = TLegend(0.55, 0.1, 0.9, 0.2)
+            # legend.SetFillStyle(kWhite)
+            legend.AddEntry(finHist, dataset, "L")
 
-        combString = "_comb"
-    else:
-        combString = ""
+            combString = "_comb"
+        else:
+            combString = ""
 
-    c2.Update()
+    c.Update()
 
-    if (dataset != "") and (dataset != "Data"):
-        dataset += "_"
+    filename_list = []
+    filename_list.append("plots/")
+    filename_list.append("typeStrings[1]")
+    filename_list.extend(datasets)
+    filename_list.append(varList[0][0])
+    filename_list.append(descrWOspaces)
+    filename_list.append(varList[3][1])
+    filename_list.append(varList[4][1])
+    filename_list.append(varList[5][1])
+    filename_list.append(combString)
 
-    if (datasetMC != "") and (datasetMC != "MC"):
-        datasetMC += "_"
-    filename_pdf = "plots/" + typeStrings[1] + "_" +\
-        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[5][1] +\
-        "_" + cutString[0] + "_" + cutStringMC[0] + combString + ".pdf"
-    filename_png = "plots/" + typeStrings[1] + "_" +\
-        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[5][1] +\
-        "_" + cutString[0] + "_" + cutStringMC[0] + combString + ".png"
+    filename = '_'.join(filename_list)
 
-    c2.Print(filename_pdf)
+    c2.Print(filename + ".pdf")
     # c2.Print(filename_png)
 
 
