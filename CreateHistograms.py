@@ -65,36 +65,35 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     ntuple.Project("recoHist", varList[2], varList[5][0])
     ntuple.Project("passHist", varList[2], cutString[1])
     # Make dist histogram
-    # TODO: Make dist histograms also when "MC" file is used
-    if ntupleMC_file == "":
-        c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
-        recoHist.SetMinimum(0)
-        recoHist.GetXaxis().SetTitle(varList[0][1])
-        recoHist.GetYaxis().SetTitle("# of muons")
-        passHist.SetMinimum(0)
-        passHist.GetXaxis().SetTitle(varList[0][1])
-        passHist.GetYaxis().SetTitle("# of muons")
+    c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
+    recoHist.SetMinimum(0)
+    recoHist.GetXaxis().SetTitle(varList[0][1])
+    recoHist.GetYaxis().SetTitle("# of muons")
+    passHist.SetMinimum(0)
+    passHist.GetXaxis().SetTitle(varList[0][1])
+    passHist.GetYaxis().SetTitle("# of muons")
 
-        recoHist.SetLineColor(kRed)
-        recoHist.Draw("E1HIST")
-        passHist.SetLineColor(kBlue)
-        passHist.Draw("E1HISTSAME")
-        legend = TLegend(0.55, 0.1, 0.9, 0.2)
-        legend.SetFillStyle(0)
-        # legend.SetTextSize(0.0275)
-        legend.AddEntry(recoHist, "No OS requirement", "L")
-        legend.AddEntry(passHist, "OS required", "L")
+    recoHist.SetLineColor(kRed)
+    recoHist.Draw("E1HIST")
+    passHist.SetLineColor(kBlue)
+    passHist.Draw("E1HISTSAME")
+    legend = TLegend(0.55, 0.1, 0.9, 0.2)
+    legend.SetFillStyle(0)
+    # legend.SetTextSize(0.0275)
+    # TODO: Make these strings configurable
+    legend.AddEntry(recoHist, "Reco muons", "L")
+    legend.AddEntry(passHist, "GMT muons", "L")
 
-        legend.Draw("SAME")
-        distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] + descrWOspaces +\
-                        varList[5][1]
-        # c1.Print(distCompTitle + ".png")
-        c1.Print(distCompTitle + ".pdf")
+    legend.Draw("SAME")
+    distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] + descrWOspaces +\
+                    varList[5][1]
+    # c1.Print(distCompTitle + ".png")
+    c1.Print(distCompTitle + ".pdf")
 
     # Make efficiency histogram
     # Get ntuple
-    f = TFile.Open(ntuple_file)
-    ntuple = f.Get(ntuple_name)
+#    f = TFile.Open(ntuple_file)
+#    ntuple = f.Get(ntuple_name)
 
     c2 = TCanvas('c2', canvasTitle, 200, 10, 700, 500)
 
@@ -115,16 +114,20 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
 
     if ntupleMC_file != "":
+        legend = TLegend(0.55, 0.1, 0.9, 0.2)
+        # legend.SetFillStyle(kWhite)
+        legend.AddEntry(finHist, dataset, "L")
+
         # Get ntuple
-        f = TFile.Open(ntupleMC_file)
-        ntuple = f.Get(ntupleMC_name)
+        fMC = TFile.Open(ntupleMC_file)
+        ntupleMC = fMC.Get(ntupleMC_name)
         recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
                           varList[1][2])
         passHistMC = TH1D("passHistMC", "", varList[1][0],
                           varList[1][1], varList[1][2])
         recoHistMC.Sumw2()
-        ntuple.Project("recoHistMC", varList[2], varList[5][0])
-        ntuple.Project("passHistMC", varList[2], cutStringMC[1])
+        ntupleMC.Project("recoHistMC", varList[2], varList[5][0])
+        ntupleMC.Project("passHistMC", varList[2], cutStringMC[1])
 
         finGraphMC = TGraphAsymmErrors()
         finHistMC = TH1D("finHistMC", "", varList[1][0], varList[1][1],
@@ -142,9 +145,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
         # Drawn again to cover horizontal error bars.
         finHistMC.Draw("hist,SAME")
 
-        legend = TLegend(0.55, 0.1, 0.9, 0.2)
-        # legend.SetFillStyle(kWhite)
-        legend.AddEntry(finHist, dataset, "L")
         legend.AddEntry(finHistMC, datasetMC, "L")
         legend.Draw()
 
