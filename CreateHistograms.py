@@ -9,9 +9,10 @@ from ROOT import *
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1: binning
 # 2: variables to plot
-# 3: physical cuts on GMT muons
-# 4: physical cuts on reco (and GMT) muons
-# (optional) 5: Range of y-axis
+# 3: physical cuts on GMT muons in first ntuple
+# 4: leave empty ("")
+# 5: physical cuts on reco (and GMT) muons
+# (optional) 6: Range of y-axis
 def generateGhostPercHist(varList, ntuple_file, dataset=""):
     generateEffOrPercHist(varList, dataset,
                           ["Probability for Ghosts", "ghost"], ntuple_file)
@@ -21,28 +22,30 @@ def generateGhostPercHist(varList, ntuple_file, dataset=""):
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1: binning
 # 2: variables to plot
-# 3: physical cuts on GMT muons
-# 4: physical cuts on reco (and GMT) muons
-# (optional) 5: Range of y-axis
+# 3: physical cuts on GMT muons in first ntuple
+# 4: leave empty ("")
+# 5: physical cuts on reco (and GMT) muons
+# (optional) 6: Range of y-axis
 def generateEfficiencyHist(varList, ntuple_file, dataset=""):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_file,
                           dataset=dataset)
 
 
 def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
-                          dataset="", datasetMC=""):
-    if len(varList) < 6:
+                          dataset="", datasetMC="", ntuple_name="ntuple",
+                          ntupleMC_name="ntuple"):
+    if len(varList) < 7:
         minYAxis = 0
         maxYAxis = 1
     else:
-        minYAxis = varList[5][0]
-        maxYAxis = varList[5][1]
+        minYAxis = varList[6][0]
+        maxYAxis = varList[6][1]
 
     gStyle.SetOptStat(0)
 
     # Get ntuple
     f = TFile.Open(ntuple_file)
-    ntuple = f.Get("ntuple")
+    ntuple = f.Get(ntuple_name)
 
     # Create descriptive strings
     descrWspaces = " - " + varList[3][1] + ", "
@@ -51,16 +54,18 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     histTitle = ""
 
     # Create cut string
-    cutString = [varList[3][1], varList[3][0] + " && " + varList[4][0]]
+    cutString = [varList[3][1], varList[3][0] + " && " + varList[5][0]]
+    cutStringMC = [varList[4][1], varList[4][0] + " && " + varList[5][0]]
 
     recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1], varList[1][2])
     passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
                     varList[1][2])
     recoHist.Sumw2()
     passHist.Sumw2()
-    ntuple.Project("recoHist", varList[2], varList[4][0])
+    ntuple.Project("recoHist", varList[2], varList[5][0])
     ntuple.Project("passHist", varList[2], cutString[1])
     # Make dist histogram
+    # TODO: Make dist histograms also when "MC" file is used
     if ntupleMC_file == "":
         c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
         recoHist.SetMinimum(0)
@@ -82,14 +87,14 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
 
         legend.Draw("SAME")
         distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] + descrWOspaces +\
-                        varList[4][1]
+                        varList[5][1]
         # c1.Print(distCompTitle + ".png")
         c1.Print(distCompTitle + ".pdf")
 
     # Make efficiency histogram
     # Get ntuple
     f = TFile.Open(ntuple_file)
-    ntuple = f.Get("ntuple")
+    ntuple = f.Get(ntuple_name)
 
     c2 = TCanvas('c2', canvasTitle, 200, 10, 700, 500)
 
@@ -112,14 +117,14 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     if ntupleMC_file != "":
         # Get ntuple
         f = TFile.Open(ntupleMC_file)
-        ntuple = f.Get("ntuple")
+        ntuple = f.Get(ntupleMC_name)
         recoHistMC = TH1D("recoHistMC", "", varList[1][0], varList[1][1],
                           varList[1][2])
         passHistMC = TH1D("passHistMC", "", varList[1][0],
                           varList[1][1], varList[1][2])
         recoHistMC.Sumw2()
-        ntuple.Project("recoHistMC", varList[2], varList[4][0])
-        ntuple.Project("passHistMC", varList[2], cutString[1])
+        ntuple.Project("recoHistMC", varList[2], varList[5][0])
+        ntuple.Project("passHistMC", varList[2], cutStringMC[1])
 
         finGraphMC = TGraphAsymmErrors()
         finHistMC = TH1D("finHistMC", "", varList[1][0], varList[1][1],
@@ -155,11 +160,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_file, ntupleMC_file="",
     if (datasetMC != "") and (datasetMC != "MC"):
         datasetMC += "_"
     filename_pdf = "plots/" + typeStrings[1] + "_" +\
-        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[4][1] +\
-        combString + ".pdf"
+        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[5][1] +\
+        "_" + cutString[0] + "_" + cutStringMC[0] + combString + ".pdf"
     filename_png = "plots/" + typeStrings[1] + "_" +\
-        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[4][1] +\
-        combString + ".png"
+        dataset + datasetMC + varList[0][0] + descrWOspaces + varList[5][1] +\
+        "_" + cutString[0] + "_" + cutStringMC[0] + combString + ".png"
 
     c2.Print(filename_pdf)
     # c2.Print(filename_png)
@@ -418,9 +423,10 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1: binning
 # 2: variables to plot
-# 3: physical cuts on GMT muons
-# 4: physical cuts on reco (and GMT) muons
-# (optional) 5: Range of y-axis
+# 3: physical cuts on GMT muons in first ntuple
+# 4: physical cuts on GMT muons in second ntuple
+# 5: physical cuts on reco (and GMT) muons
+# (optional) 6: Range of y-axis
 def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file,
                                   dataset=""):
     generateEffOrPercHist(varList, ["Probability for Ghosts vs. ", "ghost"],
@@ -431,13 +437,16 @@ def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file,
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1: binning
 # 2: variables to plot
-# 3: physical cuts on GMT muons
-# 4: physical cuts on reco (and GMT) muons
-# (optional) 5: Range of y-axis
+# 3: physical cuts on GMT muons in first ntuple
+# 4: physical cuts on GMT muons in second ntuple
+# 5: physical cuts on reco (and GMT) muons
+# (optional) 6: Range of y-axis
 def generateCombinedEfficiencyHist(varList, ntuple_file, ntupleMC_file,
-                                   dataset="Data", datasetMC="MC"):
+                                   dataset="Data", datasetMC="MC", ntuple_name="ntuple",
+                                   ntupleMC_name="ntuple"):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_file,
-                          ntupleMC_file, dataset, datasetMC)
+                          ntupleMC_file, dataset, datasetMC, ntuple_name,
+                          ntupleMC_name)
 
 
 # varlist entries:
