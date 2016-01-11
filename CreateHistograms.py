@@ -125,7 +125,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
     c.Update()
 
     filename_list = []
-    filename_list.append("plots/")
     filename_list.append(typeStrings[1])
     filename_list.extend(datasets)
     filename_list.append(varList[0][0])
