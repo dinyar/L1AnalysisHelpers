@@ -51,7 +51,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         ntuples.append(f.Get(ntuple_name))
 
     # Create descriptive strings
-    descrWOspaces = "_" + varList[3][1] + "_"
+    descr = varList[3][1]
     canvasTitle = ""
 
     # Create cut string
@@ -97,7 +97,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
 
         legend.Draw("SAME")
         distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] +\
-                        descrWOspaces + varList[5][1]
+                        "_" + descr + "_" + varList[5][1]
         c1.Print(distCompTitle + ".pdf")
 
         c.cd()
@@ -122,26 +122,23 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
             # legend.SetFillStyle(kWhite)
             legend.AddEntry(finHist, dataset, "L")
 
-            combString = "_comb"
-        else:
-            combString = ""
-
     c.Update()
 
     filename_list = []
     filename_list.append("plots/")
-    filename_list.append("typeStrings[1]")
+    filename_list.append(typeStrings[1])
     filename_list.extend(datasets)
     filename_list.append(varList[0][0])
-    filename_list.append(descrWOspaces)
+    filename_list.append(descr)
     filename_list.append(varList[3][1])
     filename_list.append(varList[4][1])
     filename_list.append(varList[5][1])
-    filename_list.append(combString)
+    if len(ntuple_files) > 1:
+        filename_list.append("comb")
 
     filename = '_'.join(filename_list)
 
-    c.Print(filename + ".pdf")
+    c.Print("plots/" + filename + ".pdf")
 
 
 # varlist entries:
