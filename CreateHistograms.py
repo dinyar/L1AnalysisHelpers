@@ -416,13 +416,12 @@ def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file,
 # 4: physical cuts on GMT muons in second ntuple
 # 5: physical cuts on reco (and GMT) muons
 # (optional) 6: Range of y-axis
-def generateCombinedEfficiencyHist(varList, ntuple_file, ntupleMC_file,
-                                   dataset="Data", datasetMC="MC", ntuple_name="ntuple",
-                                   ntupleMC_name="ntuple"):
-    generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_file,
-                          ntupleMC_file, dataset, datasetMC, ntuple_name,
-                          ntupleMC_name)
-
+def generateCombinedEfficiencyHist(varList, ntuple_files, datasets,
+                                   ntuple_names, distribution_labels,
+                                   line_colours):
+    generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
+                          datasets, ntuple_names, distribution_labels,
+                          line_colours)
 
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
