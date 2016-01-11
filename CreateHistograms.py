@@ -141,8 +141,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
 
     filename = '_'.join(filename_list)
 
-    c2.Print(filename + ".pdf")
-    # c2.Print(filename_png)
+    c.Print(filename + ".pdf")
 
 
 # varlist entries:
