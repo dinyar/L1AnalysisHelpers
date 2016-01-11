@@ -110,7 +110,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         finGraph.Divide(passHist, recoHist)
         finHist.GetXaxis().SetTitle(varList[0][1])
         finHist.GetYaxis().SetTitle(typeStrings[0])
-        finHist.Draw("hist")
+        finHist.Draw("hist,SAME")
         # passHist.Draw("E1,SAME")
         finGraph.SetLineColor(line_colour)
         finGraph.SetMarkerColor(line_colour)
