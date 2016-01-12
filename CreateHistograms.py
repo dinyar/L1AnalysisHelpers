@@ -58,7 +58,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         cutStrings.append([gmt_cut[1], gmt_cut[0] + " && " + varList[3][0]])
         descStrings.append(gmt_cut[1])
 
-    c = TCanvas('c', canvasTitle, 200, 10, 700, 500)
+    c = TCanvas('c', '', 200, 10, 700, 500)
     fin_legend = TLegend(0.55, 0.1, 0.9, 0.2)
     finHists = []
     finGraphs = []
@@ -76,7 +76,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         ntuple.Project("recoHist", varList[2], varList[3][0])
         ntuple.Project("passHist", varList[2], cutString[1])
         # Make dist histogram
-        c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
+        c1 = TCanvas('c1', '', 200, 10, 700, 500)
         recoHist.SetMinimum(0)
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
@@ -414,7 +414,7 @@ def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file,
 # (optional) 6: Range of y-axis
 def generateCombinedEfficiencyHist(varList, ntuple_files, datasets,
                                    ntuple_names, distribution_labels,
-                                   line_colours):
+                                   line_colours, gmt_cuts):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           datasets, ntuple_names, distribution_labels,
                           line_colours, gmt_cuts)
