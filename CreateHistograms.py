@@ -2,8 +2,6 @@
 
 from ROOT import *
 
-# #TODO:0 efficiency plots should output the two hists before being divided
-
 
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -32,13 +30,14 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 
 
 def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
-                          ntuple_names, distribution_labels, line_colours):
-    if len(varList) < 7:
+                          ntuple_names, distribution_labels, line_colours,
+                          gmt_cuts):
+    if len(varList) < 5:
         minYAxis = 0
         maxYAxis = 1
     else:
-        minYAxis = varList[6][0]
-        maxYAxis = varList[6][1]
+        minYAxis = varList[4][0]
+        maxYAxis = varList[4][1]
 
     gStyle.SetOptStat(0)
 
@@ -51,16 +50,13 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         ntuples.append(f.Get(ntuple_name))
 
     # Create descriptive strings
-    descr = varList[3][1]
-    canvasTitle = ""
 
-    # Create cut string
+    # Create cut string and desciption
     cutStrings = []
-    for ntuple in ntuples:
-        cutStrings.append([varList[3][1],
-                           varList[3][0] + " && " + varList[5][0]])
-        cutStrings.append([varList[4][1],
-                           varList[4][0] + " && " + varList[5][0]])
+    descStrings = []
+    for gmt_cut in gmt_cuts:
+        cutStrings.append([gmt_cut[1], gmt_cut[0] + " && " + varList[3][0]])
+        descStrings.append(gmt_cut[1])
 
     c = TCanvas('c', canvasTitle, 200, 10, 700, 500)
     for ntuple, dataset, dist_label, cutString, line_colour in zip(ntuples,
@@ -74,7 +70,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
                         varList[1][2])
         recoHist.Sumw2()
         passHist.Sumw2()
-        ntuple.Project("recoHist", varList[2], varList[5][0])
+        ntuple.Project("recoHist", varList[2], varList[3][0])
         ntuple.Project("passHist", varList[2], cutString[1])
         # Make dist histogram
         c1 = TCanvas('c1', canvasTitle, 200, 10, 700, 500)
@@ -97,7 +93,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
 
         legend.Draw("SAME")
         distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] +\
-                        "_" + descr + "_" + varList[5][1]
+                        "_" + cutString[0] + "_" + varList[3][1]
         c1.Print(distCompTitle + ".pdf")
 
         c.cd()
@@ -128,10 +124,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
     filename_list.append(typeStrings[1])
     filename_list.extend(datasets)
     filename_list.append(varList[0][0])
-    filename_list.append(descr)
+    filename_list.extend(descStrings)
+    for cutString in cutStrings:
+        filename_list.append(cutString[0])
     filename_list.append(varList[3][1])
-    filename_list.append(varList[4][1])
-    filename_list.append(varList[5][1])
     if len(ntuple_files) > 1:
         filename_list.append("comb")
 
@@ -416,7 +412,7 @@ def generateCombinedEfficiencyHist(varList, ntuple_files, datasets,
                                    line_colours):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           datasets, ntuple_names, distribution_labels,
-                          line_colours)
+                          line_colours, gmt_cuts)
 
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
