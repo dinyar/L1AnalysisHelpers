@@ -122,7 +122,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
 
         if len(ntuple_files) > 1:
             # legend.SetFillStyle(kWhite)
-            fin_legend.AddEntry(finHist, dataset, "L")
+            fin_legend.AddEntry(finHist, dist_label[1], "L")
             fin_legend.Draw("SAME")
 
     filename_list = []
