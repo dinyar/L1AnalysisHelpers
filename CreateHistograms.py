@@ -63,6 +63,9 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
                            varList[4][0] + " && " + varList[5][0]])
 
     c = TCanvas('c', canvasTitle, 200, 10, 700, 500)
+    fin_legend = TLegend(0.55, 0.1, 0.9, 0.2)
+    finHists = []
+    finGraphs = []
     for ntuple, dataset, dist_label, cutString, line_colour in zip(ntuples,
                                                                    datasets,
                                                                    distribution_labels,
@@ -110,19 +113,21 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         finGraph.Divide(passHist, recoHist)
         finHist.GetXaxis().SetTitle(varList[0][1])
         finHist.GetYaxis().SetTitle(typeStrings[0])
+        finHist.SetLineColor(line_colour)
+        finHists.append(finHist)
         finHist.Draw("hist,SAME")
-        # passHist.Draw("E1,SAME")
+        c.Update()
         finGraph.SetLineColor(line_colour)
         finGraph.SetMarkerColor(line_colour)
+        finGraphs.append(finGraph)
         finGraph.Draw("p,SAME")
         finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
+        c.Update()
 
         if len(ntuple_files) > 1:
-            legend = TLegend(0.55, 0.1, 0.9, 0.2)
             # legend.SetFillStyle(kWhite)
-            legend.AddEntry(finHist, dataset, "L")
-
-    c.Update()
+            fin_legend.AddEntry(finHist, dataset, "L")
+            fin_legend.Draw("SAME")
 
     filename_list = []
     filename_list.append(typeStrings[1])
