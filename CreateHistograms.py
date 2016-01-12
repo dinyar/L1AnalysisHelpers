@@ -439,15 +439,18 @@ def generateRateHist(varList, ntuple_file, dataset="Data", datasetMC="MC"):
 
 binningDict = {}
 binningDict["etaFine"] = [100, -2.6, 2.6]
+binningDict["etaFineRestr"] = [100, 0, 2.6]
 binningDict["etaFine_centralRegion"] = [80, -1.6, 1.6]
 binningDict["phiFine"] = [100, -3.2, 3.2]
+binningDict["phiFineRestr"] = [50, 0, 1.6]
 binningDict["ptFine"] = [100, 0, 200]
+binningDict["pt140Fine"] = [100, 0, 140]
 binningDict["pt50Fine"] = [100, 0, 50]
 binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["invMassFine"] = [40, 3, 3.2]
 binningDict["distNarrow"] = [50, 0, 0.4]
-binningDict["distWide"] = [50, 0, 2]
-binningDict["distWideFine"] = [100, 0, 2]
+binningDict["distWide"] = [50, 0, 1]
+binningDict["distWideFine"] = [100, 0, 1]
 
 
 # Cuts
