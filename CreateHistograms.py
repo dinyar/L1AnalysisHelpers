@@ -128,8 +128,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     filename_list.append(typeStrings[1])
     filename_list.append(varList[0][0])
     filename_list.extend(descStrings)
-    for cutString in cutStrings:
-        filename_list.append(cutString[0])
     filename_list.append(varList[3][1])
     if len(ntuple_files) > 1:
         filename_list.append("comb")
