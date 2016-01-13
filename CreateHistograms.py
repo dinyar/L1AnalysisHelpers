@@ -29,7 +29,7 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
                           dataset=dataset)
 
 
-def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
+def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
                           gmt_cuts):
     if len(varList) < 5:
@@ -44,6 +44,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
     # Get ntuples
     files = []
     ntuples = []
+    # TODO: Close files when done with them.
     for ntuple_file, ntuple_name in zip(ntuple_files, ntuple_names):
         f = TFile.Open(ntuple_file)
         files.append(f)
@@ -59,14 +60,13 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         descStrings.append(gmt_cut[1])
 
     c = TCanvas('c', '', 200, 10, 700, 500)
-    fin_legend = TLegend(0.55, 0.1, 0.9, 0.2)
+    fin_legend = TLegend(0.5, 0.75, 0.65, 0.9)  # was: 0.55, 0.1, 0.9, 0.2
     finHists = []
     finGraphs = []
-    for ntuple, dataset, dist_label, cutString, line_colour in zip(ntuples,
-                                                                   datasets,
-                                                                   distribution_labels,
-                                                                   cutStrings,
-                                                                   line_colours):
+    for ntuple, dist_label, cutString, line_colour in zip(ntuples,
+                                                          distribution_labels,
+                                                          cutStrings,
+                                                          line_colours):
         recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1],
                         varList[1][2])
         passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
@@ -88,14 +88,14 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
         recoHist.Draw("E1HIST")
         passHist.SetLineColor(kBlue)
         passHist.Draw("E1HISTSAME")
-        legend = TLegend(0.55, 0.1, 0.9, 0.2)
+        legend = TLegend(0.5, 0.75, 0.65, 0.9)
         legend.SetFillStyle(0)
         # legend.SetTextSize(0.0275)
         legend.AddEntry(recoHist, dist_label[0], "L")
         legend.AddEntry(passHist, dist_label[1], "L")
 
         legend.Draw("SAME")
-        distCompTitle = "plots/" + "dist_" + dataset + "_" + varList[0][0] +\
+        distCompTitle = "plots/" + "dist_" + varList[0][0] +\
                         "_" + cutString[0] + "_" + varList[3][1]
         c1.Print(distCompTitle + ".pdf")
 
@@ -127,7 +127,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files, datasets,
 
     filename_list = []
     filename_list.append(typeStrings[1])
-    filename_list.extend(datasets)
     filename_list.append(varList[0][0])
     filename_list.extend(descStrings)
     for cutString in cutStrings:
@@ -408,16 +407,14 @@ def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file,
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1: binning
 # 2: variables to plot
-# 3: physical cuts on GMT muons in first ntuple
-# 4: physical cuts on GMT muons in second ntuple
-# 5: physical cuts on reco (and GMT) muons
-# (optional) 6: Range of y-axis
-def generateCombinedEfficiencyHist(varList, ntuple_files, datasets,
+# 3: physical cuts on reco (and GMT) muons
+# (optional) 4: Range of y-axis
+def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    ntuple_names, distribution_labels,
                                    line_colours, gmt_cuts):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
-                          datasets, ntuple_names, distribution_labels,
-                          line_colours, gmt_cuts)
+                          ntuple_names, distribution_labels, line_colours,
+                          gmt_cuts)
 
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
