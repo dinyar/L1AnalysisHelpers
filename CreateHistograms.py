@@ -50,8 +50,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         files.append(f)
         ntuples.append(f.Get(ntuple_name))
 
-    # Create descriptive strings
-
     # Create cut string and desciption
     cutStrings = []
     descStrings = []
@@ -95,8 +93,12 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         legend.AddEntry(passHist, dist_label[1], "L")
 
         legend.Draw("SAME")
-        distCompTitle = "plots/" + "dist_" + varList[0][0] +\
-                        "_" + cutString[0] + "_" + varList[3][1]
+        if folder_name == "":
+            folder = "plots/"
+        else:
+            folder = "plots/" + folder_name + "/"
+        distCompTitle = folder + "dist_" + varList[0][0] +\
+            "_" + cutString[0] + "_" + varList[3][1]
         c1.Print(distCompTitle + ".pdf")
 
         c.cd()
@@ -117,7 +119,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         finGraph.SetMarkerColor(line_colour)
         finGraphs.append(finGraph)
         finGraph.Draw("p,SAME")
-        finHist.Draw("hist,SAME")    # Drawn again to cover horizontal error bars.
+        finHist.Draw("hist,SAME")  # Drawn again to cover horizontal error bars
         c.Update()
 
         if len(ntuple_files) > 1:
@@ -421,6 +423,7 @@ def generateCombinedEfficiencyHist(varList, ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
                           gmt_cuts, folder_name)
 
+
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1: binning
@@ -607,7 +610,6 @@ cutDict["jpsi-Pt1-mass3to32-central_us"] = ["(" + jPsiPt1 + " && " +
                                             diMu_centralRegion_gmt +
                                             " && " + usableCharges + ")",
                                             "JPsi1_Mass3to32_CentralRegion_UsableSign"]
-
 
 
 # #TODO:0 Find better colours.
