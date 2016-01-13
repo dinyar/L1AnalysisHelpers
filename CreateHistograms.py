@@ -454,8 +454,9 @@ binningDict["pt140Fine"] = [50, 0, 140]
 binningDict["pt50Fine"] = [100, 0, 50]
 binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["invMassFine"] = [40, 3, 3.2]
-binningDict["distNarrow"] = [50, 0, 0.4]
+binningDict["distNarrow"] = [25, 0, 0.4]
 binningDict["distWide"] = [25, 0, 1]
+binningDict["distVeryWide"] = [300, 0, 12]
 binningDict["distWideFine"] = [100, 0, 1]
 
 
