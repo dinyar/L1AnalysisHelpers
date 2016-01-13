@@ -59,14 +59,13 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         descStrings.append(gmt_cut[1])
 
     c = TCanvas('c', '', 200, 10, 700, 500)
-    fin_legend = TLegend(0.5, 0.75, 0.65, 0.9)  # was: 0.55, 0.1, 0.9, 0.2
+    fin_legend = TLegend(0.55, 0.8, 0.9, 0.9)
     finHists = []
     finGraphs = []
-    for ntuple, dist_label, cutString, line_colour, f in zip(ntuples,
-                                                             distribution_labels,
-                                                             cutStrings,
-                                                             line_colours,
-                                                             files):
+    for ntuple, dist_label, cutString, line_colour in zip(ntuples,
+                                                          distribution_labels,
+                                                          cutStrings,
+                                                          line_colours):
         recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1],
                         varList[1][2])
         passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
@@ -88,7 +87,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         recoHist.Draw("E1HIST")
         passHist.SetLineColor(kBlue)
         passHist.Draw("E1HISTSAME")
-        legend = TLegend(0.5, 0.75, 0.65, 0.9)
+        legend = TLegend(0.55, 0.8, 0.9, 0.9)
         legend.SetFillStyle(0)
         # legend.SetTextSize(0.0275)
         legend.AddEntry(recoHist, dist_label[0], "L")
@@ -124,8 +123,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             fin_legend.SetFillStyle(0)
             fin_legend.AddEntry(finHist, dist_label[1], "L")
             fin_legend.Draw("SAME")
-
-        f.Close()
 
     filename_list = []
     filename_list.append(typeStrings[1])
