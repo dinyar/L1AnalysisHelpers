@@ -443,6 +443,7 @@ def generateRateHist(varList, ntuple_file, dataset="Data", datasetMC="MC"):
 # Binning
 
 binningDict = {}
+binningDict["charge"] = [3, -1, 1]
 binningDict["etaFine"] = [100, -2.6, 2.6]
 binningDict["etaFineRestr"] = [25, -1, 2.6]
 binningDict["etaFine_centralRegion"] = [80, -1.6, 1.6]
