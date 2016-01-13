@@ -31,7 +31,7 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 
 def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
-                          gmt_cuts):
+                          gmt_cuts, folder_name=""):
     if len(varList) < 5:
         minYAxis = 0
         maxYAxis = 1
@@ -44,6 +44,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     # Get ntuples
     files = []
     ntuples = []
+    # TODO: Don't open duplicate files here!
     for ntuple_file, ntuple_name in zip(ntuple_files, ntuple_names):
         f = TFile.Open(ntuple_file)
         files.append(f)
@@ -134,7 +135,12 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
     filename = '_'.join(filename_list)
 
-    c.Print("plots/" + filename + ".pdf")
+    if folder_name == "":
+        folder = "plots/"
+    else:
+        folder = "plots/" + folder_name + "/"
+
+    c.Print(folder + filename + ".pdf")
 
 
 # varlist entries:
@@ -394,10 +400,12 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
 # 4: physical cuts on GMT muons in second ntuple
 # 5: physical cuts on reco (and GMT) muons
 # (optional) 6: Range of y-axis
-def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file,
-                                  dataset=""):
+def generateCombinedGhostPercHist(varList, ntuple_files,
+                                  ntuple_names, distribution_labels,
+                                  line_colours, gmt_cuts, folder_name=""):
     generateEffOrPercHist(varList, ["Probability for Ghosts vs. ", "ghost"],
-                          ntuple_file, ntupleMC_file, dataset, datasetMC)
+                          ntuple_files, ntuple_names, distribution_labels,
+                          line_colours, gmt_cuts, folder_name)
 
 
 # varlist entries:
@@ -408,10 +416,10 @@ def generateCombinedGhostPercHist(varList, ntuple_file, ntupleMC_file,
 # (optional) 4: Range of y-axis
 def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    ntuple_names, distribution_labels,
-                                   line_colours, gmt_cuts):
+                                   line_colours, gmt_cuts, folder_name=""):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
-                          gmt_cuts)
+                          gmt_cuts, folder_name)
 
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
