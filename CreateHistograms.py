@@ -44,7 +44,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     # Get ntuples
     files = []
     ntuples = []
-    # TODO: Close files when done with them.
     for ntuple_file, ntuple_name in zip(ntuple_files, ntuple_names):
         f = TFile.Open(ntuple_file)
         files.append(f)
@@ -63,10 +62,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     fin_legend = TLegend(0.5, 0.75, 0.65, 0.9)  # was: 0.55, 0.1, 0.9, 0.2
     finHists = []
     finGraphs = []
-    for ntuple, dist_label, cutString, line_colour in zip(ntuples,
-                                                          distribution_labels,
-                                                          cutStrings,
-                                                          line_colours):
+    for ntuple, dist_label, cutString, line_colour, f in zip(ntuples,
+                                                             distribution_labels,
+                                                             cutStrings,
+                                                             line_colours,
+                                                             files):
         recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1],
                         varList[1][2])
         passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
@@ -124,6 +124,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             fin_legend.SetFillStyle(0)
             fin_legend.AddEntry(finHist, dist_label[1], "L")
             fin_legend.Draw("SAME")
+
+        f.Close()
 
     filename_list = []
     filename_list.append(typeStrings[1])
