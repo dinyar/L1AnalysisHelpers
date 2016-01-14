@@ -42,13 +42,15 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     gStyle.SetOptStat(0)
 
     # Get ntuples
-    files = []
     ntuples = []
-    # TODO: Don't open duplicate files here!
+    unique_files = {}
     for ntuple_file, ntuple_name in zip(ntuple_files, ntuple_names):
-        f = TFile.Open(ntuple_file)
-        files.append(f)
-        ntuples.append(f.Get(ntuple_name))
+        if ntuple_file in unique_files:
+            ntuples.append(unique_files[ntuple_file].Get(ntuple_name))
+        else:
+            f = TFile.Open(ntuple_file)
+            unique_files[ntuple_file] = f
+            ntuples.append(f.Get(ntuple_name))
 
     # Create cut string and desciption
     cutStrings = []
