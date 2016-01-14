@@ -97,7 +97,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             folder = "plots/"
         else:
             folder = "plots/" + folder_name + "/"
-        distCompTitle = folder + "dist_" + varList[0][0] +\
+        distCompTitle = folder + "dist_" + dist_label[2] + "_" + varList[0][0] +\
             "_" + cutString[0] + "_" + varList[3][1]
         c1.Print(distCompTitle + ".pdf")
 
