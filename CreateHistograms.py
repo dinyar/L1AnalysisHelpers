@@ -146,6 +146,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
     c.Print(folder + filename + ".pdf")
 
+    # Clean up.
+    for name, f in unique_files.iteritems():
+        f.Close()
+
 
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
