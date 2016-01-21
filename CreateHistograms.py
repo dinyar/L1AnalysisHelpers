@@ -30,7 +30,7 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 
 
 def generateEffOrPercHist(varList, typeStrings, ntuple_files,
-                          ntuple_names, distribution_labels, line_colours,
+                          ntuple_names, labels, line_colours,
                           gmt_cuts, folder_name=""):
     if len(varList) < 5:
         minYAxis = 0
@@ -63,10 +63,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     fin_legend = TLegend(0.55, 0.8, 0.9, 0.9)
     finHists = []
     finGraphs = []
-    for ntuple, dist_label, cutString, line_colour in zip(ntuples,
-                                                          distribution_labels,
-                                                          cutStrings,
-                                                          line_colours):
+    for ntuple, label, cutString, line_colour in zip(ntuples,
+                                                     labels,
+                                                     cutStrings,
+                                                     line_colours):
         recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1],
                         varList[1][2])
         passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
@@ -91,16 +91,25 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         legend = TLegend(0.55, 0.8, 0.9, 0.9)
         legend.SetFillStyle(0)
         # legend.SetTextSize(0.0275)
-        legend.AddEntry(recoHist, dist_label[0], "L")
-        legend.AddEntry(passHist, dist_label[1], "L")
+        legend.AddEntry(recoHist, label[0], "L")
+        legend.AddEntry(passHist, label[1], "L")
 
         legend.Draw("SAME")
         if folder_name == "":
             folder = "plots/"
         else:
             folder = "plots/" + folder_name + "/"
-        distCompTitle = folder + "dist_" + dist_label[2] + "_" + varList[0][0] +\
-            "_" + cutString[0] + "_" + varList[3][1]
+
+        dist_filename_list = []
+        dist_filename_list.append("dist")
+        dist_filename_list.append(label[2])
+        dist_filename_list.append(varList[0][0])
+        dist_filename_list.append(cutString[0])
+        dist_filename_list.append(varList[3][1])
+        if len(label) > 3:
+            dist_filename_list.append(label[3])
+        dist_filename = '_'.join(dist_filename_list)
+        distCompTitle = folder + dist_filename
         c1.Print(distCompTitle + ".pdf")
 
         c.cd()
@@ -126,7 +135,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
         if len(ntuple_files) > 1:
             fin_legend.SetFillStyle(0)
-            fin_legend.AddEntry(finHist, dist_label[1], "L")
+            fin_legend.AddEntry(finHist, label[1], "L")
             fin_legend.Draw("SAME")
 
     filename_list = []
@@ -134,6 +143,9 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     filename_list.append(varList[0][0])
     filename_list.extend(descStrings)
     filename_list.append(varList[3][1])
+    for label in labels:
+        if len(label) > 3:
+            filename_list.append(label[3])
     if len(ntuple_files) > 1:
         filename_list.append("comb")
 
