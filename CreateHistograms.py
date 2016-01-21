@@ -54,10 +54,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
     # Create cut string and desciption
     cutStrings = []
-    descStrings = []
+    descStrings = set()
     for gmt_cut in gmt_cuts:
         cutStrings.append([gmt_cut[1], gmt_cut[0] + " && " + varList[3][0]])
-        descStrings.append(gmt_cut[1])
+        descStrings.add(gmt_cut[1])
 
     c = TCanvas('c', '', 200, 10, 700, 500)
     fin_legend = TLegend(0.55, 0.8, 0.9, 0.9)
