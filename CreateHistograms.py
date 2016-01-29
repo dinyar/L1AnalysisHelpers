@@ -60,7 +60,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         descStrings.add(gmt_cut[1])
 
     c = TCanvas('c', '', 200, 10, 700, 500)
-    fin_legend = TLegend(0.55, 0.8, 0.9, 0.9)
+    fin_legend = TLegend(0.45, 0.7, 0.9, 0.9)
     finHists = []
     finGraphs = []
     for ntuple, label, cutString, line_colour in zip(ntuples,
