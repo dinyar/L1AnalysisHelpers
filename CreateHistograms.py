@@ -31,7 +31,7 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 
 def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, labels, line_colours,
-                          gmt_cuts, folder_name=""):
+                          gmt_cuts, folder_name="", drawGenMus=True):
     if len(varList) < 5:
         minYAxis = 0
         maxYAxis = 1
@@ -84,14 +84,16 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
 
-        recoHist.SetLineColor(kRed)
-        recoHist.Draw("E1HIST")
-        passHist.SetLineColor(kBlue)
-        passHist.Draw("E1HISTSAME")
         legend = TLegend(0.55, 0.8, 0.9, 0.9)
         legend.SetFillStyle(0)
+
+        recoHist.SetLineColor(kRed)
+        if drawGenMus is True:
+            recoHist.Draw("E1HIST")
+            legend.AddEntry(recoHist, label[0], "L")
+        passHist.SetLineColor(kBlue)
+        passHist.Draw("E1HISTSAME")
         # legend.SetTextSize(0.0275)
-        legend.AddEntry(recoHist, label[0], "L")
         legend.AddEntry(passHist, label[1], "L")
 
         legend.Draw("SAME")
@@ -422,10 +424,11 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
 # (optional) 6: Range of y-axis
 def generateCombinedGhostPercHist(varList, ntuple_files,
                                   ntuple_names, distribution_labels,
-                                  line_colours, gmt_cuts, folder_name=""):
+                                  line_colours, gmt_cuts, folder_name="",
+                                  drawGenMus=True):
     generateEffOrPercHist(varList, ["Probability for Ghosts vs. ", "ghost"],
                           ntuple_files, ntuple_names, distribution_labels,
-                          line_colours, gmt_cuts, folder_name)
+                          line_colours, gmt_cuts, folder_name, drawGenMus)
 
 
 # varlist entries:
@@ -436,10 +439,11 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
 # (optional) 4: Range of y-axis
 def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    ntuple_names, distribution_labels,
-                                   line_colours, gmt_cuts, folder_name=""):
+                                   line_colours, gmt_cuts, folder_name="",
+                                   drawGenMus=True):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
-                          gmt_cuts, folder_name)
+                          gmt_cuts, folder_name, drawGenMus)
 
 
 # varlist entries:
