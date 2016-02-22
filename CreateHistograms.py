@@ -148,16 +148,16 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         if len(ntuple_files) > 1:
             fin_legend.SetFillStyle(0)
             fin_legend.AddEntry(finHist, label[1], legend_marker)
-    
+
     if drawStackPlot is True:
         hist_stack.Draw("hist")
         c.Update()
-   
+
     for finHist, finGraph in zip(finHists, finGraphs):
         finHist.Draw("hist,SAME")
         finGraph.Draw("p,SAME")
         finHist.Draw("hist,SAME")   # Drawn again to cover horizontal error bars
-        c.Update() 
+        c.Update()
 
     if len(ntuple_files) > 1:
         fin_legend.Draw("SAME")
