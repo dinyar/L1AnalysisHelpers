@@ -1,7 +1,13 @@
 #!/usr/bin/python
 
+import random
+import string
+
 from ROOT import *
 
+
+def randomword(length):
+    return ''.join(random.choice(string.lowercase) for i in range(length))
 
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
@@ -74,14 +80,16 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                                                      labels,
                                                      cutStrings,
                                                      line_colours):
-        recoHist = TH1D("recoHist"+cutString[0], "", varList[1][0], varList[1][1],
+        randomID = randomword(10)
+
+        recoHist = TH1D("recoHist"+randomID, "", varList[1][0], varList[1][1],
                         varList[1][2])
-        passHist = TH1D("passHist"+cutString[0], "", varList[1][0], varList[1][1],
+        passHist = TH1D("passHist"+randomID, "", varList[1][0], varList[1][1],
                         varList[1][2])
         recoHist.Sumw2()
         passHist.Sumw2()
-        ntuple.Project("recoHist"+cutString[0], varList[2], varList[3][0])
-        ntuple.Project("passHist"+cutString[0], varList[2], cutString[1])
+        ntuple.Project("recoHist"+randomID, varList[2], varList[3][0])
+        ntuple.Project("passHist"+randomID, varList[2], cutString[1])
         # Make dist histogram
         c1 = TCanvas('c1', '', 200, 10, 700, 500)
         recoHist.SetMinimum(0)
@@ -123,7 +131,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
         c.cd()
         finGraph = TGraphAsymmErrors()
-        finHist = TH1D("finHist"+cutString[0], "", varList[1][0], varList[1][1],
+        finHist = TH1D("finHist"+randomID, "", varList[1][0], varList[1][1],
                        varList[1][2])
         finHist.Divide(passHist, recoHist, 1.0, 1.0)
         finGraph.Divide(passHist, recoHist)
