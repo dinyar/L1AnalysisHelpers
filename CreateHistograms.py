@@ -31,7 +31,8 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 
 def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, labels, line_colours,
-                          gmt_cuts, folder_name="", drawGenMus=True):
+                          gmt_cuts, folder_name="", drawGenMus=True,
+                          drawStackPlot=False):
     if len(varList) < 5:
         minYAxis = 0
         maxYAxis = 1
@@ -63,6 +64,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     fin_legend = TLegend(0.45, 0.7, 0.9, 0.9)
     finHists = []
     finGraphs = []
+
+    if drawStackPlot is True:
+        hist_stack = THStack()
+
     for ntuple, label, cutString, line_colour in zip(ntuples,
                                                      labels,
                                                      cutStrings,
@@ -126,18 +131,24 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         finHist.GetYaxis().SetTitle(typeStrings[0])
         finHist.SetLineColor(line_colour)
         finHists.append(finHist)
-        finHist.Draw("hist,SAME")
-        c.Update()
         finGraph.SetLineColor(line_colour)
         finGraph.SetMarkerColor(line_colour)
         finGraphs.append(finGraph)
-        finGraph.Draw("p,SAME")
-        finHist.Draw("hist,SAME")  # Drawn again to cover horizontal error bars
-        c.Update()
+        if drawStackPlot is True:
+            legend_marker = "F"
+            finHist.SetFillColor(line_colour)
+            hist_stack.add(finHist)
+        else:
+            legend_marker = "L"
+            finHist.Draw("hist,SAME")
+            c.Update()
+            finGraph.Draw("p,SAME")
+            finHist.Draw("hist,SAME")  # Drawn again to cover horizontal error bars
+            c.Update()
 
         if len(ntuple_files) > 1:
             fin_legend.SetFillStyle(0)
-            fin_legend.AddEntry(finHist, label[1], "L")
+            fin_legend.AddEntry(finHist, label[1], legend_marker)
             fin_legend.Draw("SAME")
 
     filename_list = []
@@ -425,10 +436,11 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
 def generateCombinedGhostPercHist(varList, ntuple_files,
                                   ntuple_names, distribution_labels,
                                   line_colours, gmt_cuts, folder_name="",
-                                  drawGenMus=True):
+                                  drawGenMus=True, drawStackPlot=False):
     generateEffOrPercHist(varList, ["Probability for Ghosts vs. ", "ghost"],
                           ntuple_files, ntuple_names, distribution_labels,
-                          line_colours, gmt_cuts, folder_name, drawGenMus)
+                          line_colours, gmt_cuts, folder_name, drawGenMus,
+                          drawStackPlot)
 
 
 # varlist entries:
@@ -440,10 +452,10 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
 def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    ntuple_names, distribution_labels,
                                    line_colours, gmt_cuts, folder_name="",
-                                   drawGenMus=True):
+                                   drawGenMus=True, drawStackPlot=False):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
-                          gmt_cuts, folder_name, drawGenMus)
+                          gmt_cuts, folder_name, drawGenMus, drawStackPlot)
 
 
 # varlist entries:
