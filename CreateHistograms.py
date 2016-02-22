@@ -124,28 +124,28 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         finHist = TH1D("finHist", "", varList[1][0], varList[1][1],
                        varList[1][2])
         finHist.Divide(passHist, recoHist, 1.0, 1.0)
-        finHist.SetMinimum(minYAxis)
-        finHist.SetMaximum(maxYAxis)
         finGraph.Divide(passHist, recoHist)
-        finHist.GetXaxis().SetTitle(varList[0][1])
-        finHist.GetYaxis().SetTitle(typeStrings[0])
-        finHist.SetLineColor(line_colour)
-        finHists.append(finHist)
-        finGraph.SetLineColor(line_colour)
-        finGraph.SetMarkerColor(line_colour)
-        finGraphs.append(finGraph)
         if drawStackPlot is True:
             legend_marker = "F"
             finHist.SetFillColor(line_colour)
             hist_stack.Add(finHist)
             hist_stack.Draw()
         else:
+            finHist.SetMinimum(minYAxis)
+            finHist.SetMaximum(maxYAxis)
+            finHist.GetXaxis().SetTitle(varList[0][1])
+            finHist.GetYaxis().SetTitle(typeStrings[0])
+            finHist.SetLineColor(line_colour)
+            finHists.append(finHist)
+            finGraph.SetLineColor(line_colour)
+            finGraph.SetMarkerColor(line_colour)
             legend_marker = "L"
             finHist.Draw("hist,SAME")
             c.Update()
             finGraph.Draw("p,SAME")
             finHist.Draw("hist,SAME")  # Drawn again to cover horizontal error bars
             c.Update()
+        finGraphs.append(finGraph)
 
         if len(ntuple_files) > 1:
             fin_legend.SetFillStyle(0)
@@ -157,6 +157,9 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     filename_list.append(varList[0][0])
     filename_list.extend(descStrings)
     filename_list.append(varList[3][1])
+    for label in labels:
+        if len(label) > 3:
+            filename_list.append(label[3])
     if len(ntuple_files) > 1:
         filename_list.append("comb")
 
