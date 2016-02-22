@@ -74,14 +74,14 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                                                      labels,
                                                      cutStrings,
                                                      line_colours):
-        recoHist = TH1D("recoHist", "", varList[1][0], varList[1][1],
+        recoHist = TH1D("recoHist"+cutString[0], "", varList[1][0], varList[1][1],
                         varList[1][2])
-        passHist = TH1D("passHist", "", varList[1][0], varList[1][1],
+        passHist = TH1D("passHist"+cutString[0], "", varList[1][0], varList[1][1],
                         varList[1][2])
         recoHist.Sumw2()
         passHist.Sumw2()
-        ntuple.Project("recoHist", varList[2], varList[3][0])
-        ntuple.Project("passHist", varList[2], cutString[1])
+        ntuple.Project("recoHist"+cutString[0], varList[2], varList[3][0])
+        ntuple.Project("passHist"+cutString[0], varList[2], cutString[1])
         # Make dist histogram
         c1 = TCanvas('c1', '', 200, 10, 700, 500)
         recoHist.SetMinimum(0)
@@ -123,46 +123,51 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
         c.cd()
         finGraph = TGraphAsymmErrors()
-        finHist = TH1D("finHist", "", varList[1][0], varList[1][1],
+        finHist = TH1D("finHist"+cutString[0], "", varList[1][0], varList[1][1],
                        varList[1][2])
         finHist.Divide(passHist, recoHist, 1.0, 1.0)
         finGraph.Divide(passHist, recoHist)
-        finHist.SetLineColor(line_colour)
-        if drawStackPlot is True:
+        if (drawStackPlot is True) and (label[2] == "uGMT"):
             legend_marker = "F"
             finHist.SetFillColor(line_colour)
-            finHist.SetFillStyle(1001)
+            finHist.SetLineColor(kBlack)
             hist_stack.Add(finHist)
-            hist_stack.Draw()
         else:
             finHist.SetMinimum(minYAxis)
             finHist.SetMaximum(maxYAxis)
             finHist.GetXaxis().SetTitle(varList[0][1])
             finHist.GetYaxis().SetTitle(typeStrings[0])
+            finHist.SetLineColor(line_colour)
             finHists.append(finHist)
             finGraph.SetLineColor(line_colour)
             finGraph.SetMarkerColor(line_colour)
             legend_marker = "L"
-            finHist.Draw("hist,SAME")
-            c.Update()
-            finGraph.Draw("p,SAME")
-            finHist.Draw("hist,SAME")  # Drawn again to cover horizontal error bars
             c.Update()
         finGraphs.append(finGraph)
 
         if len(ntuple_files) > 1:
             fin_legend.SetFillStyle(0)
             fin_legend.AddEntry(finHist, label[1], legend_marker)
-            fin_legend.Draw("SAME")
+    
+    if drawStackPlot is True:
+        hist_stack.Draw("hist")
+        c.Update()
+   
+    for finHist, finGraph in zip(finHists, finGraphs):
+        finHist.Draw("hist,SAME")
+        finGraph.Draw("p,SAME")
+        finHist.Draw("hist,SAME")   # Drawn again to cover horizontal error bars
+        c.Update() 
+
+    if len(ntuple_files) > 1:
+        fin_legend.Draw("SAME")
+        c.Update()
 
     filename_list = []
     filename_list.append(typeStrings[1])
     filename_list.append(varList[0][0])
     filename_list.extend(descStrings)
     filename_list.append(varList[3][1])
-    for label in labels:
-        if len(label) > 3:
-            filename_list.append(label[3])
     if len(ntuple_files) > 1:
         filename_list.append("comb")
 
