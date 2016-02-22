@@ -39,14 +39,21 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, labels, line_colours,
                           gmt_cuts, folder_name="", drawGenMus=True,
                           drawStackPlot=False):
+    gStyle.SetOptStat(0)
+
+    if folder_name == "":
+        folder = "plots/"
+    else:
+        folder = "plots/" + folder_name + "/"
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
     if len(varList) < 5:
         minYAxis = 0
         maxYAxis = 1
     else:
         minYAxis = varList[4][0]
         maxYAxis = varList[4][1]
-
-    gStyle.SetOptStat(0)
 
     # Get ntuples
     ntuples = []
@@ -112,10 +119,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         legend.AddEntry(passHist, label[1], "L")
 
         legend.Draw("SAME")
-        if folder_name == "":
-            folder = "plots/"
-        else:
-            folder = "plots/" + folder_name + "/"
 
         dist_filename_list = []
         dist_filename_list.append("dist")
@@ -180,11 +183,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         filename_list.append("comb")
 
     filename = '_'.join(filename_list)
-
-    if folder_name == "":
-        folder = "plots/"
-    else:
-        folder = "plots/" + folder_name + "/"
 
     c.Print(folder + filename + ".pdf")
 
