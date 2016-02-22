@@ -137,7 +137,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         if drawStackPlot is True:
             legend_marker = "F"
             finHist.SetFillColor(line_colour)
-            hist_stack.add(finHist)
+            hist_stack.Add(finHist)
+            hist_stack.Draw()
         else:
             legend_marker = "L"
             finHist.Draw("hist,SAME")
