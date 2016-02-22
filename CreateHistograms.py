@@ -157,9 +157,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     filename_list.append(varList[0][0])
     filename_list.extend(descStrings)
     filename_list.append(varList[3][1])
-    for label in labels:
-        if len(label) > 3:
-            filename_list.append(label[3])
     if len(ntuple_files) > 1:
         filename_list.append("comb")
 
