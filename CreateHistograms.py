@@ -67,6 +67,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
     if drawStackPlot is True:
         hist_stack = THStack()
+        hist_stack.SetMinimum(minYAxis)
+        hist_stack.SetMaximum(maxYAxis)
 
     for ntuple, label, cutString, line_colour in zip(ntuples,
                                                      labels,
@@ -125,9 +127,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                        varList[1][2])
         finHist.Divide(passHist, recoHist, 1.0, 1.0)
         finGraph.Divide(passHist, recoHist)
+        finHist.SetLineColor(line_colour)
         if drawStackPlot is True:
             legend_marker = "F"
             finHist.SetFillColor(line_colour)
+            finHist.SetFillStyle(1001)
             hist_stack.Add(finHist)
             hist_stack.Draw()
         else:
@@ -135,7 +139,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             finHist.SetMaximum(maxYAxis)
             finHist.GetXaxis().SetTitle(varList[0][1])
             finHist.GetYaxis().SetTitle(typeStrings[0])
-            finHist.SetLineColor(line_colour)
             finHists.append(finHist)
             finGraph.SetLineColor(line_colour)
             finGraph.SetMarkerColor(line_colour)
