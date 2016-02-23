@@ -39,13 +39,13 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, labels, line_colours,
                           gmt_cuts, folder_name="", drawGenMus=True,
-                          drawStackPlot=False):
+                          drawStackPlot=False, rootFolder="plots"):
     gStyle.SetOptStat(0)
 
     if folder_name == "":
-        folder = "plots/"
+        folder = rootFolder + "/"
     else:
-        folder = "plots/" + folder_name + "/"
+        folder = rootFolder + "/" + folder_name + "/"
     if not os.path.exists(folder):
         os.makedirs(folder)
 
@@ -452,11 +452,12 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
 def generateCombinedGhostPercHist(varList, ntuple_files,
                                   ntuple_names, distribution_labels,
                                   line_colours, gmt_cuts, folder_name="",
-                                  drawGenMus=True, drawStackPlot=False):
+                                  drawGenMus=True, drawStackPlot=False,
+                                  rootFolder="plots"):
     generateEffOrPercHist(varList, ["Probability for Ghosts vs. ", "ghost"],
                           ntuple_files, ntuple_names, distribution_labels,
                           line_colours, gmt_cuts, folder_name, drawGenMus,
-                          drawStackPlot)
+                          drawStackPlot, rootFolder)
 
 
 # varlist entries:
@@ -468,10 +469,12 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
 def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    ntuple_names, distribution_labels,
                                    line_colours, gmt_cuts, folder_name="",
-                                   drawGenMus=True, drawStackPlot=False):
+                                   drawGenMus=True, drawStackPlot=False,
+                                   rootFolder="plots"):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
-                          gmt_cuts, folder_name, drawGenMus, drawStackPlot)
+                          gmt_cuts, folder_name, drawGenMus, drawStackPlot,
+                          rootFolder)
 
 
 # varlist entries:
