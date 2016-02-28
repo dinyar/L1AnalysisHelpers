@@ -454,7 +454,7 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
                                   line_colours, gmt_cuts, folder_name="",
                                   drawGenMus=True, drawStackPlot=False,
                                   rootFolder="plots"):
-    generateEffOrPercHist(varList, ["Probability for Ghosts vs. ", "ghost"],
+    generateEffOrPercHist(varList, ["Probability for Ghosts", "ghost"],
                           ntuple_files, ntuple_names, distribution_labels,
                           line_colours, gmt_cuts, folder_name, drawGenMus,
                           drawStackPlot, rootFolder)
