@@ -79,7 +79,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     finHists = []
     finGraphs = []
 
-    # TODO: Set axis labels!
     if drawStackPlot is True:
         hist_stack = THStack()
         hist_stack.SetMinimum(minYAxis)
