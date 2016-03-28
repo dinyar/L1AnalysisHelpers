@@ -260,6 +260,68 @@ def generateEfficiencyStack(varList, ntuple_file, dataset=""):
     # c1.Print(filename_png)
 
 
+def simplePlotter(varList, ntuple_files, ntuple_names, labels,
+                  cutStrings, line_colours, folder_name="",
+                  rootFolder="plots", drawLogY=False):
+    gStyle.SetOptStat(0)
+
+    if folder_name == "":
+        folder = rootFolder + "/"
+    else:
+        folder = rootFolder + "/" + folder_name + "/"
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    # Get ntuples
+    ntuples = []
+    unique_files = {}
+    for ntuple_file, ntuple_name in zip(ntuple_files, ntuple_names):
+        if ntuple_file in unique_files:
+            ntuples.append(unique_files[ntuple_file].Get(ntuple_name))
+        else:
+            f = TFile.Open(ntuple_file)
+            unique_files[ntuple_file] = f
+            ntuples.append(f.Get(ntuple_name))
+
+    c = TCanvas('c', '', 200, 10, 700, 500)
+    if drawLogY is True:
+        c.SetLogy()
+    for ntuple, label, cutString, line_colour in zip(ntuples,
+                                                     labels,
+                                                     cutStrings,
+                                                     line_colours):
+        randomID = randomword(10)
+
+        recoHist = TH1D("recoHist"+randomID, "", varList[1][0], varList[1][1],
+                        varList[1][2])
+        recoHist.Sumw2()
+        ntuple.Project("recoHist"+randomID, varList[2], cutString)
+        # Make dist histogram
+        recoHist.SetMinimum(0)
+        recoHist.GetXaxis().SetTitle(varList[0][1])
+        recoHist.GetYaxis().SetTitle("# of muons")
+
+        legend = TLegend(0.55, 0.8, 0.9, 0.9)
+        legend.SetFillStyle(0)
+
+        recoHist.SetLineColor(line_colour)
+        recoHist.Draw("E1HIST")
+        legend.AddEntry(recoHist, label[0], "L")
+
+    legend.Draw("SAME")
+
+    dist_filename_list = []
+    dist_filename_list.append("dist")
+    dist_filename_list.append(label[2])
+    dist_filename_list.append(varList[0][0])
+    dist_filename_list.append(cutString[0])
+    if len(label) > 3:
+        dist_filename_list.append(label[3])
+    dist_filename = '_'.join(dist_filename_list)
+    distCompTitle = folder + dist_filename
+    c.Print(distCompTitle + ".pdf")
+
+
 # varlist entries:
 # 0: descriptive string used for caption and filename (what is plotted)
 # 1: binning
