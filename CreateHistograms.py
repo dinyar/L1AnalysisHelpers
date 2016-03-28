@@ -83,8 +83,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         hist_stack = THStack()
         hist_stack.SetMinimum(minYAxis)
         hist_stack.SetMaximum(maxYAxis)
-        hist_stack.GetXaxis().SetTitle(varList[0][1])
-        hist_stack.GetYaxis().SetTitle(typeStrings[0])
 
     for ntuple, label, cutString, line_colour in zip(ntuples,
                                                      labels,
@@ -166,6 +164,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     if drawStackPlot is True:
         hist_stack.Draw("hist")
         c.Update()
+        hist_stack.GetXaxis().SetTitle(varList[0][1])
+        hist_stack.GetYaxis().SetTitle(typeStrings[0])
 
     for finHist, finGraph in zip(finHists, finGraphs):
         finHist.Draw("hist,SAME")
