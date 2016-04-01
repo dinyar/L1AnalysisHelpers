@@ -286,6 +286,7 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
     c = TCanvas('c', '', 200, 10, 700, 500)
     if drawLogY is True:
         c.SetLogy()
+    legend = TLegend(0.55, 0.7, 0.9, 0.9)
     histList = []
     for ntuple, label, cutString, line_colour in zip(ntuples,
                                                      labels,
@@ -302,12 +303,10 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
 
-        legend = TLegend(0.55, 0.8, 0.9, 0.9)
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(line_colour)
         histList.append(recoHist)
-        # recoHist.Draw("E1HIST, SAME")
         legend.AddEntry(recoHist, label, "L")
 
     for hist in histList:
