@@ -305,7 +305,7 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(line_colour)
-        recoHist.DrawCopy("E1HIST, SAME")
+        recoHist.Draw("E1HIST, SAME")
         legend.AddEntry(recoHist, label, "L")
         c.Update()
 
