@@ -295,7 +295,7 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
         recoHist = TH1D("recoHist"+randomID, "", varList[1][0], varList[1][1],
                         varList[1][2])
         recoHist.Sumw2()
-        ntuple.Project("recoHist"+randomID, varList[2], cutString)
+        ntuple.Project("recoHist"+randomID, varList[2], cutString[0])
         # Make dist histogram
         recoHist.SetMinimum(0)
         recoHist.GetXaxis().SetTitle(varList[0][1])
@@ -314,7 +314,7 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
     dist_filename_list.append("dist")
     dist_filename_list.append(label[2])
     dist_filename_list.append(varList[0][0])
-    dist_filename_list.append(cutString[0])
+    dist_filename_list.append(cutString[1])
     if len(label) > 3:
         dist_filename_list.append(label[3])
     dist_filename = '_'.join(dist_filename_list)
@@ -573,7 +573,7 @@ binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["invMassFine"] = [40, 3, 3.2]
 binningDict["distNarrow"] = [50, 0, 0.4]
 binningDict["distWide"] = [25, 0, 1]
-binningDict["distSym"] = [50, -1, 1]
+binningDict["distSym"] = [40, -1, 1]
 binningDict["distVeryWide"] = [15, 0, 15]
 binningDict["distWideFine"] = [100, 0, 1]
 
