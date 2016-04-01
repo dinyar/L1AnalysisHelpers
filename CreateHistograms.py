@@ -286,6 +286,7 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
     c = TCanvas('c', '', 200, 10, 700, 500)
     if drawLogY is True:
         c.SetLogy()
+    histList = []
     for ntuple, label, cutString, line_colour in zip(ntuples,
                                                      labels,
                                                      cutStrings,
@@ -305,11 +306,16 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(line_colour)
-        recoHist.Draw("E1HIST, SAME")
+        histList.append(recoHist)
+        # recoHist.Draw("E1HIST, SAME")
         legend.AddEntry(recoHist, label, "L")
+
+    for hist in histList:
+        hist.Draw("hist,SAME")
         c.Update()
 
     legend.Draw("SAME")
+    c.Update()
 
     dist_filename_list = []
     dist_filename_list.append("dist")
