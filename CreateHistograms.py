@@ -302,6 +302,7 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
         recoHist.SetMinimum(0)
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
+        recoHist.SetMinimum(0.0001)
 
         legend.SetFillStyle(0)
 
