@@ -305,18 +305,15 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(line_colour)
-        recoHist.Draw("E1HIST")
-        legend.AddEntry(recoHist, label[0], "L")
+        recoHist.DrawCopy("E1HIST")
+        legend.AddEntry(recoHist, label, "L")
 
     legend.Draw("SAME")
 
     dist_filename_list = []
     dist_filename_list.append("dist")
-    dist_filename_list.append(label[2])
     dist_filename_list.append(varList[0][0])
     dist_filename_list.append(cutString[1])
-    if len(label) > 3:
-        dist_filename_list.append(label[3])
     dist_filename = '_'.join(dist_filename_list)
     distCompTitle = folder + dist_filename
     c.Print(distCompTitle + ".pdf")
