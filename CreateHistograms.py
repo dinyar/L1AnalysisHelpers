@@ -554,13 +554,6 @@ def generateRateHist(varList, ntuple_file, dataset="Data", datasetMC="MC"):
     generateCombinedRateHist(
         varList, ntuple_file, ntupleMC_file="", dataset="")
 
-# etaScalePos= [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.75,1.8,1.85,1.9,1.95,2.,2.05,2.1,2.15,2.2,2.25,2.3,2.35,2.4];
-# etaScale= [None] * 63
-# for i in range(31):
-#     etaScale[i]    = -etaScalePos[31-i]
-#     etaScale[32+i] = etaScalePos[i+1]
-# etaScale[31]=0;
-
 # Binning
 
 binningDict = {}
@@ -577,7 +570,7 @@ binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["invMassFine"] = [40, 3, 3.2]
 binningDict["distNarrow"] = [50, 0, 0.4]
 binningDict["distWide"] = [25, 0, 1]
-binningDict["distSym"] = [40, -1, 1]
+binningDict["distSym"] = [80, -1, 1]
 binningDict["distVeryWide"] = [15, 0, 15]
 binningDict["distWideFine"] = [100, 0, 1]
 
