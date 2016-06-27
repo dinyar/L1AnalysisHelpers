@@ -46,8 +46,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         folder = rootFolder + "/"
     else:
         folder = rootFolder + "/" + folder_name + "/"
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    if not os.path.exists(folder + "pdf"):
+        os.makedirs(folder + "pdf")
+    if not os.path.exists(folder + "png"):
+        os.makedirs(folder + "png")
 
     if len(varList) < 5:
         minYAxis = 0
@@ -130,8 +132,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         if len(label) > 3:
             dist_filename_list.append(label[3])
         dist_filename = '_'.join(dist_filename_list)
-        distCompTitle = folder + dist_filename
-        c1.Print(distCompTitle + ".pdf")
+        c1.Print(folder + "png/" + dist_filename + ".png")
+        c1.Print(folder + "pdf/" + dist_filename + ".pdf")
 
         c.cd()
         finGraph = TGraphAsymmErrors()
@@ -187,7 +189,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
     filename = '_'.join(filename_list)
 
-    c.Print(folder + filename + ".pdf")
+    c.Print(folder + "pdf/" + filename + ".pdf")
+    c.Print(folder + "png/" + filename + ".png")
 
     # Clean up.
     for name, f in unique_files.iteritems():
@@ -323,7 +326,7 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
     dist_filename_list.append(cutString[1])
     dist_filename = '_'.join(dist_filename_list)
     distCompTitle = folder + dist_filename
-    c.Print(distCompTitle + ".pdf")
+    c.Print(distCompTitle + ".png")
 
 
 # varlist entries:
