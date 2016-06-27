@@ -18,6 +18,8 @@ def randomword(length):
 # 4: leave empty ("")
 # 5: physical cuts on reco (and GMT) muons
 # (optional) 6: Range of y-axis
+
+
 def generateGhostPercHist(varList, ntuple_file, dataset=""):
     generateEffOrPercHist(varList, dataset,
                           ["Probability for Ghosts", "ghost"], ntuple_file)
@@ -39,6 +41,7 @@ def generateEfficiencyHist(varList, ntuple_file, dataset=""):
 def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, labels, line_colours,
                           gmt_cuts, folder_name="", drawGenMus=True,
+                          drawDistributions=False,
                           drawStackPlot=False, rootFolder="plots"):
     gStyle.SetOptStat(0)
 
@@ -92,14 +95,14 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                                                      line_colours):
         randomID = randomword(10)
 
-        recoHist = TH1D("recoHist"+randomID, "", varList[1][0], varList[1][1],
+        recoHist = TH1D("recoHist" + randomID, "", varList[1][0], varList[1][1],
                         varList[1][2])
-        passHist = TH1D("passHist"+randomID, "", varList[1][0], varList[1][1],
+        passHist = TH1D("passHist" + randomID, "", varList[1][0], varList[1][1],
                         varList[1][2])
         recoHist.Sumw2()
         passHist.Sumw2()
-        ntuple.Project("recoHist"+randomID, varList[2], varList[3][0])
-        ntuple.Project("passHist"+randomID, varList[2], cutString[1])
+        ntuple.Project("recoHist" + randomID, varList[2], varList[3][0])
+        ntuple.Project("passHist" + randomID, varList[2], cutString[1])
         # Make dist histogram
         c1 = TCanvas('c1', '', 200, 10, 700, 500)
         recoHist.SetMinimum(0)
@@ -132,12 +135,13 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         if len(label) > 3:
             dist_filename_list.append(label[3])
         dist_filename = '_'.join(dist_filename_list)
-        c1.Print(folder + "png/" + dist_filename + ".png")
-        c1.Print(folder + "pdf/" + dist_filename + ".pdf")
+        if drawDistributions is True:
+            c1.Print(folder + "png/" + dist_filename + ".png")
+            c1.Print(folder + "pdf/" + dist_filename + ".pdf")
 
         c.cd()
         finGraph = TGraphAsymmErrors()
-        finHist = TH1D("finHist"+randomID, "", varList[1][0], varList[1][1],
+        finHist = TH1D("finHist" + randomID, "", varList[1][0], varList[1][1],
                        varList[1][2])
         finHist.Divide(passHist, recoHist, 1.0, 1.0)
         finGraph.Divide(passHist, recoHist)
@@ -172,7 +176,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     for finHist, finGraph in zip(finHists, finGraphs):
         finHist.Draw("hist,SAME")
         finGraph.Draw("p,SAME")
-        finHist.Draw("hist,SAME")   # Drawn again to cover horizontal error bars
+        # Drawn again to cover horizontal error bars
+        finHist.Draw("hist,SAME")
         c.Update()
 
     if len(ntuple_files) > 1:
@@ -297,10 +302,10 @@ def simplePlotter(varList, ntuple_files, ntuple_names, labels,
                                                      line_colours):
         randomID = randomword(10)
 
-        recoHist = TH1D("recoHist"+randomID, "", varList[1][0], varList[1][1],
+        recoHist = TH1D("recoHist" + randomID, "", varList[1][0], varList[1][1],
                         varList[1][2])
         recoHist.Sumw2()
-        ntuple.Project("recoHist"+randomID, varList[2], cutString[0])
+        ntuple.Project("recoHist" + randomID, varList[2], cutString[0])
         # Make dist histogram
         recoHist.SetMinimum(0)
         recoHist.GetXaxis().SetTitle(varList[0][1])
