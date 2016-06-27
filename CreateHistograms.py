@@ -528,12 +528,12 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
 def generateCombinedGhostPercHist(varList, ntuple_files,
                                   ntuple_names, distribution_labels,
                                   line_colours, gmt_cuts, folder_name="",
-                                  drawGenMus=True, drawStackPlot=False,
-                                  rootFolder="plots"):
+                                  drawGenMus=True, drawDistributions=False,
+                                  drawStackPlot=False, rootFolder="plots"):
     generateEffOrPercHist(varList, ["Probability for Ghosts", "ghost"],
                           ntuple_files, ntuple_names, distribution_labels,
                           line_colours, gmt_cuts, folder_name, drawGenMus,
-                          drawStackPlot, rootFolder)
+                          drawDistributions, drawStackPlot, rootFolder)
 
 
 # varlist entries:
@@ -545,12 +545,12 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
 def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    ntuple_names, distribution_labels,
                                    line_colours, gmt_cuts, folder_name="",
-                                   drawGenMus=True, drawStackPlot=False,
-                                   rootFolder="plots"):
+                                   drawGenMus=True, drawDistributions=False,
+                                   drawStackPlot=False, rootFolder="plots"):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
-                          gmt_cuts, folder_name, drawGenMus, drawStackPlot,
-                          rootFolder)
+                          gmt_cuts, folder_name, drawGenMus, drawDistributions,
+                          drawStackPlot, rootFolder)
 
 
 # varlist entries:
