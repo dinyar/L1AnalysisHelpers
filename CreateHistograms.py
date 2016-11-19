@@ -42,7 +42,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           ntuple_names, labels, line_colours,
                           gmt_cuts, folder_name="", drawGenMus=True,
                           drawDistributions=False,
-                          drawStackPlot=False, rootFolder="plots"):
+                          drawStackPlot=False, rootFolder="plots",
+			  distLogy=False):
     gStyle.SetOptStat(0)
 
     if folder_name == "":
@@ -105,10 +106,15 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         ntuple.Project("passHist" + randomID, varList[2], cutString[1])
         # Make dist histogram
         c1 = TCanvas('c1', '', 200, 10, 700, 500)
-        recoHist.SetMinimum(0)
+	if distLogy is True:
+            recoHist.SetMinimum(0.00001)
+            passHist.SetMinimum(0.00001)
+            gPad.SetLogy()
+        else: 
+            recoHist.SetMinimum(0)
+            passHist.SetMinimum(0)
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
-        passHist.SetMinimum(0)
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
 
@@ -529,11 +535,13 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
                                   ntuple_names, distribution_labels,
                                   line_colours, gmt_cuts, folder_name="",
                                   drawGenMus=True, drawDistributions=False,
-                                  drawStackPlot=False, rootFolder="plots"):
+                                  drawStackPlot=False, rootFolder="plots",
+                                  distLogy=False):
     generateEffOrPercHist(varList, ["Probability for Ghosts", "ghost"],
                           ntuple_files, ntuple_names, distribution_labels,
                           line_colours, gmt_cuts, folder_name, drawGenMus,
-                          drawDistributions, drawStackPlot, rootFolder)
+                          drawDistributions, drawStackPlot, rootFolder,
+                          distLogy)
 
 
 # varlist entries:
@@ -546,11 +554,12 @@ def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    ntuple_names, distribution_labels,
                                    line_colours, gmt_cuts, folder_name="",
                                    drawGenMus=True, drawDistributions=False,
-                                   drawStackPlot=False, rootFolder="plots"):
+                                   drawStackPlot=False, rootFolder="plots",
+                                   distLogy=False):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
                           gmt_cuts, folder_name, drawGenMus, drawDistributions,
-                          drawStackPlot, rootFolder)
+                          drawStackPlot, rootFolder, distLogy)
 
 
 # varlist entries:
