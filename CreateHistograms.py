@@ -3,6 +3,7 @@
 import random
 import string
 import os
+import CMS_lumi, tdrstyle
 
 from ROOT import *
 
@@ -44,7 +45,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           drawDistributions=False,
                           drawStackPlot=False, rootFolder="plots",
 			  distLogy=False):
-    gStyle.SetOptStat(0)
+#    gStyle.SetOptStat(0)
+    tdrstyle.setTDRStyle()
+    CMS_lumi.lumi_sqrtS = "13 TeV"
+    iPeriod = 0
 
     if folder_name == "":
         folder = rootFolder + "/"
