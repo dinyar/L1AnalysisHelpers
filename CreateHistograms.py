@@ -3,7 +3,8 @@
 import random
 import string
 import os
-import CMS_lumi, tdrstyle
+import CMS_lumi
+import tdrstyle
 
 from ROOT import *
 
@@ -44,7 +45,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           gmt_cuts, folder_name="", drawGenMus=True,
                           drawDistributions=False,
                           drawStackPlot=False, rootFolder="plots",
-			  distLogy=False):
+                          distLogy=False):
+    #    gStyle.SetOptStat(0)
     tdrstyle.setTDRStyle()
     CMS_lumi.lumi_sqrtS = "13 TeV"
     iPeriod = 0
@@ -83,10 +85,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         cutStrings.append([gmt_cut[1], gmt_cut[0] + " && " + varList[3][0]])
         descStrings.add(gmt_cut[1])
 
-    c = TCanvas('c', '', 200, 10, 700, 500)
-    fin_legend = TLegend(0.45, 0.7, 0.95, 0.9)
-    fin_legend.SetBorderSize(0)
-    fin_legend.SetFillStyle(0)
+    c = TCanvas()
+    fin_legend = TLegend(0.45, 0.7, 0.9, 0.9)
     finHists = []
     finGraphs = []
 
@@ -110,12 +110,12 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         ntuple.Project("recoHist" + randomID, varList[2], varList[3][0])
         ntuple.Project("passHist" + randomID, varList[2], cutString[1])
         # Make dist histogram
-        c1 = TCanvas('c1', '', 200, 10, 700, 500)
-	if distLogy is True:
+        c1 = TCanvas()
+        if distLogy is True:
             recoHist.SetMinimum(0.00001)
             passHist.SetMinimum(0.00001)
             gPad.SetLogy()
-        else: 
+        else:
             recoHist.SetMinimum(0)
             passHist.SetMinimum(0)
         recoHist.GetXaxis().SetTitle(varList[0][1])
@@ -123,8 +123,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
 
-        legend = TLegend(0.55, 0.8, 0.95, 0.9)
-        legend.SetBorderSize(0)
+        legend = TLegend(0.55, 0.8, 0.9, 0.9)
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(kRed)
