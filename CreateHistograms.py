@@ -45,7 +45,6 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           drawDistributions=False,
                           drawStackPlot=False, rootFolder="plots",
 			  distLogy=False):
-#    gStyle.SetOptStat(0)
     tdrstyle.setTDRStyle()
     CMS_lumi.lumi_sqrtS = "13 TeV"
     iPeriod = 0
@@ -85,7 +84,9 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         descStrings.add(gmt_cut[1])
 
     c = TCanvas('c', '', 200, 10, 700, 500)
-    fin_legend = TLegend(0.45, 0.7, 0.9, 0.9)
+    fin_legend = TLegend(0.45, 0.7, 0.95, 0.9)
+    fin_legend.SetBorderSize(0)
+    fin_legend.SetFillStyle(0)
     finHists = []
     finGraphs = []
 
@@ -122,7 +123,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
 
-        legend = TLegend(0.55, 0.8, 0.9, 0.9)
+        legend = TLegend(0.55, 0.8, 0.95, 0.9)
+        legend.SetBorderSize(0)
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(kRed)
