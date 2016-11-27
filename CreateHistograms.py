@@ -124,6 +124,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         passHist.GetYaxis().SetTitle("# of muons")
 
         legend = TLegend(0.55, 0.8, 0.9, 0.9)
+        legend.SetBorderSize(0)
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(kRed)
@@ -176,6 +177,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
         if len(ntuple_files) > 1:
             fin_legend.SetFillStyle(0)
+            fin_legend.SetBorderSize(0)
             fin_legend.AddEntry(finHist, label[1], legend_marker)
 
     if drawStackPlot is True:
