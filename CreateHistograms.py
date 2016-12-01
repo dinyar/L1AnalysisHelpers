@@ -86,7 +86,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         descStrings.add(gmt_cut[1])
 
     c = TCanvas()
-    fin_legend = TLegend(0.45, 0.7, 0.9, 0.9)
+    fin_legend = TLegend(0.17, 0.72, 0.9, 0.92)
     finHists = []
     finGraphs = []
 
@@ -123,7 +123,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
 
-        legend = TLegend(0.55, 0.8, 0.9, 0.9)
+        legend = TLegend(0.17, 0.72, 0.9, 0.92)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
 
@@ -503,12 +503,12 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
 # 2: Binning for second variable
 # 3: Variables to plot (in the form x1:x2)
 # 4: physical cuts
-def generate2DRateHist(varList, ntuple_file, dataset=""):
-    gStyle.SetOptStat(110011)
+def generate2DRateHist(varList, ntuple_file, ntuple_name, dataset=""):
+    gStyle.SetOptStat(0)
 
     # Get ntuple
     f = TFile.Open(ntuple_file)
-    ntuple = f.Get("ntuple")
+    ntuple = f.Get(ntuple_name)
 
     c1 = TCanvas('c1', "", 200, 10, 700, 500)
     rateHist = TH2D("rateHist", "",
@@ -522,9 +522,9 @@ def generate2DRateHist(varList, ntuple_file, dataset=""):
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename_pdf = "plots/hist2D_dist_" + dataset + varList[0][0] + "_" +\
+    filename_pdf = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
         varList[4][1] + ".pdf"
-    filename_png = "plots/hist2D_dist_" + dataset + varList[0][0] + "_" +\
+    filename_png = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
         varList[4][1] + ".png"
     c1.Print(filename_pdf)
     # c1.Print(filename_png)
