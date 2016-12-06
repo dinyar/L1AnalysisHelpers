@@ -85,7 +85,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         cutStrings.append([gmt_cut[1], gmt_cut[0] + " && " + varList[3][0]])
         descStrings.add(gmt_cut[1])
 
-    c = TCanvas()
+    c = TCanvas("c", "", 525, 500)
+    c.SetRightMargin(0.05)
     fin_legend = TLegend(0.17, 0.72, 0.9, 0.92)
     finHists = []
     finGraphs = []
@@ -110,7 +111,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         ntuple.Project("recoHist" + randomID, varList[2], varList[3][0])
         ntuple.Project("passHist" + randomID, varList[2], cutString[1])
         # Make dist histogram
-        c1 = TCanvas()
+        c1 = TCanvas("c1", "", 525, 500)
+        c1.SetRightMargin(0.05)
         if distLogy is True:
             recoHist.SetMinimum(0.00001)
             passHist.SetMinimum(0.00001)
@@ -130,11 +132,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         recoHist.SetLineColor(kRed)
         if drawGenMus is True:
             recoHist.Draw("E1HIST")
-            legend.AddEntry(recoHist, label[0], "L")
+            legend.AddEntry(recoHist, label[0], "LP")
         passHist.SetLineColor(kBlue)
         passHist.Draw("E1HISTSAME")
         # legend.SetTextSize(0.0275)
-        legend.AddEntry(passHist, label[1], "L")
+        legend.AddEntry(passHist, label[1], "LP")
 
         legend.Draw("SAME")
 
@@ -171,7 +173,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             finHists.append(finHist)
             finGraph.SetLineColor(line_colour)
             finGraph.SetMarkerColor(line_colour)
-            legend_marker = "L"
+            legend_marker = "LP"
             c.Update()
         finGraphs.append(finGraph)
 
@@ -510,12 +512,15 @@ def generate2DRateHist(varList, ntuple_file, ntuple_name, dataset=""):
     tdrstyle.setTDRStyle()
     CMS_lumi.lumi_sqrtS = "13 TeV"
     iPeriod = 0
+    gStyle.SetPalette(53)
 
     # Get ntuple
     f = TFile.Open(ntuple_file)
     ntuple = f.Get(ntuple_name)
 
-    c1 = TCanvas()
+    c1 = TCanvas("c1", "", 700, 500)
+    c1.SetRightMargin(0.175)
+
     rateHist = TH2D("rateHist", "",
                     varList[1][0], varList[1][1], varList[1][2], varList[2][0],
                     varList[2][1], varList[2][2])
