@@ -67,6 +67,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         minYAxis = varList[4][0]
         maxYAxis = varList[4][1]
 
+    print "#########################################################"
+    print maxDistRanges
     if maxDistRanges is None:
         maxDistRanges = len(ntuple_files) * [0]
         print "Using default y-axis range."
@@ -120,6 +122,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         # Make dist histogram
         c1 = TCanvas("c1", "", 525, 500)
         c1.SetRightMargin(0.05)
+        c1.SetLeftMargin(0.05)
         if distLogy is True:
             recoHist.SetMinimum(0.00001)
             passHist.SetMinimum(0.00001)
@@ -132,10 +135,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             passHist.SetMaximum(maxDistYAxis)
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
-        recoHist.GetYaxis().SetTitleOffset(1.5)
+        recoHist.GetYaxis().SetTitleOffset(1.6)
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
-        passHist.GetYaxis().SetTitleOffset(1.5)
+        passHist.GetYaxis().SetTitleOffset(1.6)
 
         legend = TLegend(0.17, 0.72, 0.9, 0.92)
         legend.SetBorderSize(0)
@@ -182,6 +185,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             finHist.GetXaxis().SetTitle(varList[0][1])
             finHist.GetYaxis().SetTitle(typeStrings[0])
             finHist.SetLineColor(line_colour)
+            finHist.SetMarkerColor(line_colour)
             finHists.append(finHist)
             finGraph.SetLineColor(line_colour)
             finGraph.SetMarkerColor(line_colour)
@@ -570,7 +574,7 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
                           ntuple_files, ntuple_names, distribution_labels,
                           line_colours, gmt_cuts, folder_name, drawGenMus,
                           drawDistributions, drawStackPlot, rootFolder,
-                          distLogy)
+                          distLogy, maxDistRanges)
 
 
 # varlist entries:
@@ -588,7 +592,7 @@ def generateCombinedEfficiencyHist(varList, ntuple_files,
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
                           gmt_cuts, folder_name, drawGenMus, drawDistributions,
-                          drawStackPlot, rootFolder, distLogy)
+                          drawStackPlot, rootFolder, distLogy, maxDistRanges)
 
 
 # varlist entries:
@@ -611,10 +615,11 @@ binningDict["phiFine"] = [100, -3.2, 3.2]
 binningDict["phiFineRestr"] = [25, -0.2, 2]
 binningDict["ptFine"] = [100, 0, 200]
 binningDict["pt140Fine"] = [50, 0, 140]
+binningDict["pt80Fine"] = [50, 0, 80]
 binningDict["pt50Fine"] = [100, 0, 50]
 binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["invMassFine"] = [40, 3, 3.2]
-binningDict["distVeryNarrow"] = [50, 0, 0.2]
+binningDict["distVeryNarrow"] = [40, 0, 0.2]
 binningDict["distNarrow"] = [50, 0, 0.3]
 binningDict["distWide"] = [25, 0, 1]
 binningDict["distSym"] = [80, -1, 1]
