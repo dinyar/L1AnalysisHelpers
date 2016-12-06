@@ -463,6 +463,7 @@ def generateRateStack(varList, ntuple_file, dataset=""):
 # 3: Variables to plot (in the form x2:x1) (!)
 # 4: physical cuts on GMT muons
 # 5: physical cuts on reco (and GMT) muons
+# 6: axis labels
 def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
     gStyle.SetOptStat(0)
 
@@ -472,7 +473,7 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
 
     descrWspaces = " - " + varList[4][1] + ", "
     descrWOspaces = "_" + varList[4][1] + "_"
-    c1 = TCanvas('c1', "", 200, 10, 700, 500)
+    c1 = TCanvas()
     tmpHist = TH2D("tmpHist", "", varList[1][0], varList[1][1], varList[1][2],
                    varList[2][0], varList[2][1], varList[2][2])
     efficiencyHist = TH2D("effHist", "",
@@ -483,16 +484,16 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
                    varList[4][0] + " && " + varList[5][0])
     efficiencyHist.Divide(tmpHist)
     axLbl = varList[3].split(":")
-    efficiencyHist.GetXaxis().SetTitle(axLbl[1])
-    efficiencyHist.GetYaxis().SetTitle(axLbl[0])
+    efficiencyHist.GetXaxis().SetTitle(varList[6][0])
+    efficiencyHist.GetYaxis().SetTitle(varList[6][1])
     efficiencyHist.DrawCopy("COLZ")
     c1.Update()
     if dataset != "":
         dataset += "_"
-    filename_pdf = "plots/hist2D_eff_" + dataset + varList[0][0] + descrWOspaces +\
-        varList[5][1] + ".pdf"
-    filename_png = "plots/hist2D_eff_" + dataset + varList[0][0] + descrWOspaces +\
-        varList[5][1] + ".png"
+    filename_pdf = "plots/hist2D_eff_" + dataset + \
+        varList[0][0] + descrWOspaces + varList[5][1] + ".pdf"
+    filename_png = "plots/hist2D_eff_" + dataset + \
+        varList[0][0] + descrWOspaces + varList[5][1] + ".png"
     c1.Print(filename_pdf)
     # c1.Print(filename_png)
 
@@ -503,29 +504,32 @@ def generate2DEfficiencyHist(varList, ntuple_file, dataset=""):
 # 2: Binning for second variable
 # 3: Variables to plot (in the form x1:x2)
 # 4: physical cuts
+# 5: axis labels
 def generate2DRateHist(varList, ntuple_file, ntuple_name, dataset=""):
     gStyle.SetOptStat(0)
+    tdrstyle.setTDRStyle()
+    CMS_lumi.lumi_sqrtS = "13 TeV"
+    iPeriod = 0
 
     # Get ntuple
     f = TFile.Open(ntuple_file)
     ntuple = f.Get(ntuple_name)
 
-    c1 = TCanvas('c1', "", 200, 10, 700, 500)
+    c1 = TCanvas()
     rateHist = TH2D("rateHist", "",
                     varList[1][0], varList[1][1], varList[1][2], varList[2][0],
                     varList[2][1], varList[2][2])
     ntuple.Project("rateHist", varList[3], varList[4][0])
-    axLbl = varList[3].split(":")
-    rateHist.GetXaxis().SetTitle(axLbl[1])
-    rateHist.GetYaxis().SetTitle(axLbl[0])
+    rateHist.GetYaxis().SetTitle(varList[5][0])
+    rateHist.GetXaxis().SetTitle(varList[5][1])
     rateHist.DrawCopy("COLZ")
     c1.Update()
     if dataset != "":
         dataset += "_"
     filename_pdf = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
         varList[4][1] + ".pdf"
-    filename_png = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
-        varList[4][1] + ".png"
+    # filename_png = "plots/hist2D_dist_" + dataset + varList[0] + "_" +\
+    #     varList[4][1] + ".png"
     c1.Print(filename_pdf)
     # c1.Print(filename_png)
 
