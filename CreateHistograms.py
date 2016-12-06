@@ -34,7 +34,7 @@ def generateGhostPercHist(varList, ntuple_file, dataset=""):
 # 3: physical cuts on GMT muons in first ntuple
 # 4: leave empty ("")
 # 5: physical cuts on reco (and GMT) muons
-# (optional) 6: Range of y-axis
+# (optional) 6: Ranges of y-axes (first two values are range for efficiency histos; last value is upper value for dist histogram)
 def generateEfficiencyHist(varList, ntuple_file, dataset=""):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_file,
                           dataset=dataset)
@@ -66,6 +66,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     else:
         minYAxis = varList[4][0]
         maxYAxis = varList[4][1]
+        if len(varList[4]) < 3:
+            maxDistYAxis = -1
+        else:
+            maxDistYAxis = varList[4][2]
 
     # Get ntuples
     ntuples = []
@@ -120,6 +124,9 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         else:
             recoHist.SetMinimum(0)
             passHist.SetMinimum(0)
+        if maxDistYAxis > 0:
+            recoHist.SetMaximum(maxDistYAxis)
+            passHist.SetMaximum(maxDistYAxis)
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
         passHist.GetXaxis().SetTitle(varList[0][1])
