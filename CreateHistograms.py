@@ -525,8 +525,9 @@ def generate2DRateHist(varList, ntuple_file, ntuple_name, dataset=""):
     f = TFile.Open(ntuple_file)
     ntuple = f.Get(ntuple_name)
 
-    c1 = TCanvas("c1", "", 700, 500)
+    c1 = TCanvas("c1", "", 700, 505)
     c1.SetRightMargin(0.175)
+    c1.SetTopMargin(0.01)
 
     rateHist = TH2D("rateHist", "",
                     varList[1][0], varList[1][1], varList[1][2], varList[2][0],
