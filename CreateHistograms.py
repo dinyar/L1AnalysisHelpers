@@ -69,6 +69,9 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
 
     if maxDistRanges is None:
         maxDistRanges = len(ntuple_files) * [0]
+        print "Using default y-axis range."
+    else:
+        print "Using custom y-axis range."
 
     # Get ntuples
     ntuples = []
@@ -129,10 +132,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             passHist.SetMaximum(maxDistYAxis)
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
-        recoHist.GetYaxis().SetTitleOffset(1.4)
+        recoHist.GetYaxis().SetTitleOffset(1.5)
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
-        passHist.GetYaxis().SetTitleOffset(1.4)
+        passHist.GetYaxis().SetTitleOffset(1.5)
 
         legend = TLegend(0.17, 0.72, 0.9, 0.92)
         legend.SetBorderSize(0)
@@ -611,7 +614,8 @@ binningDict["pt140Fine"] = [50, 0, 140]
 binningDict["pt50Fine"] = [100, 0, 50]
 binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["invMassFine"] = [40, 3, 3.2]
-binningDict["distNarrow"] = [50, 0, 0.4]
+binningDict["distVeryNarrow"] = [50, 0, 0.2]
+binningDict["distNarrow"] = [50, 0, 0.3]
 binningDict["distWide"] = [25, 0, 1]
 binningDict["distSym"] = [80, -1, 1]
 binningDict["distVeryWide"] = [15, 0, 15]
