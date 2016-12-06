@@ -34,7 +34,7 @@ def generateGhostPercHist(varList, ntuple_file, dataset=""):
 # 3: physical cuts on GMT muons in first ntuple
 # 4: leave empty ("")
 # 5: physical cuts on reco (and GMT) muons
-# (optional) 6: Ranges of y-axes (first two values are range for efficiency histos; last value is upper value for dist histogram)
+# (optional) 6: Range of y-axis
 def generateEfficiencyHist(varList, ntuple_file, dataset=""):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_file,
                           dataset=dataset)
@@ -45,7 +45,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
                           gmt_cuts, folder_name="", drawGenMus=True,
                           drawDistributions=False,
                           drawStackPlot=False, rootFolder="plots",
-                          distLogy=False):
+                          distLogy=False, maxDistRanges=None):
     #    gStyle.SetOptStat(0)
     tdrstyle.setTDRStyle()
     CMS_lumi.lumi_sqrtS = "13 TeV"
@@ -66,10 +66,9 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     else:
         minYAxis = varList[4][0]
         maxYAxis = varList[4][1]
-        if len(varList[4]) < 3:
-            maxDistYAxis = -1
-        else:
-            maxDistYAxis = varList[4][2]
+
+    if maxDistRanges is None:
+        maxDistRanges = len(ntuples) * [0]
 
     # Get ntuples
     ntuples = []
@@ -100,10 +99,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         hist_stack.SetMinimum(minYAxis)
         hist_stack.SetMaximum(maxYAxis)
 
-    for ntuple, label, cutString, line_colour in zip(ntuples,
-                                                     labels,
-                                                     cutStrings,
-                                                     line_colours):
+    for ntuple, label, cutString, line_colour, maxDistYAxis in zip(ntuples,
+                                                                   labels,
+                                                                   cutStrings,
+                                                                   line_colours,
+                                                                   maxDistRanges):
         randomID = randomword(10)
 
         recoHist = TH1D("recoHist" + randomID, "", varList[1][0], varList[1][1],
