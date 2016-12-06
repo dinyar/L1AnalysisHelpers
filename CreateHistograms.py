@@ -68,7 +68,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         maxYAxis = varList[4][1]
 
     if maxDistRanges is None:
-        maxDistRanges = len(ntuples) * [0]
+        maxDistRanges = len(ntuple_files) * [0]
 
     # Get ntuples
     ntuples = []
@@ -129,8 +129,10 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
             passHist.SetMaximum(maxDistYAxis)
         recoHist.GetXaxis().SetTitle(varList[0][1])
         recoHist.GetYaxis().SetTitle("# of muons")
+        recoHist.GetYaxis().SetTitleOffset(1.4)
         passHist.GetXaxis().SetTitle(varList[0][1])
         passHist.GetYaxis().SetTitle("# of muons")
+        passHist.GetYaxis().SetTitleOffset(1.4)
 
         legend = TLegend(0.17, 0.72, 0.9, 0.92)
         legend.SetBorderSize(0)
@@ -525,9 +527,9 @@ def generate2DRateHist(varList, ntuple_file, ntuple_name, dataset=""):
     f = TFile.Open(ntuple_file)
     ntuple = f.Get(ntuple_name)
 
-    c1 = TCanvas("c1", "", 700, 505)
+    c1 = TCanvas("c1", "", 700, 525)
     c1.SetRightMargin(0.175)
-    c1.SetTopMargin(0.01)
+    c1.SetTopMargin(0.05)
 
     rateHist = TH2D("rateHist", "",
                     varList[1][0], varList[1][1], varList[1][2], varList[2][0],
@@ -560,7 +562,7 @@ def generateCombinedGhostPercHist(varList, ntuple_files,
                                   line_colours, gmt_cuts, folder_name="",
                                   drawGenMus=True, drawDistributions=False,
                                   drawStackPlot=False, rootFolder="plots",
-                                  distLogy=False):
+                                  distLogy=False, maxDistRanges=None):
     generateEffOrPercHist(varList, ["Probability for Ghosts", "ghost"],
                           ntuple_files, ntuple_names, distribution_labels,
                           line_colours, gmt_cuts, folder_name, drawGenMus,
@@ -579,7 +581,7 @@ def generateCombinedEfficiencyHist(varList, ntuple_files,
                                    line_colours, gmt_cuts, folder_name="",
                                    drawGenMus=True, drawDistributions=False,
                                    drawStackPlot=False, rootFolder="plots",
-                                   distLogy=False):
+                                   distLogy=False, maxDistRanges=None):
     generateEffOrPercHist(varList, ["Efficiency", "eff"], ntuple_files,
                           ntuple_names, distribution_labels, line_colours,
                           gmt_cuts, folder_name, drawGenMus, drawDistributions,
