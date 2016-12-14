@@ -50,6 +50,7 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
     tdrstyle.setTDRStyle()
     CMS_lumi.lumi_sqrtS = "13 TeV"
     iPeriod = 0
+    gStyle.SetLegendTextSize(0.04)
 
     if folder_name == "":
         folder = rootFolder + "/"
@@ -67,13 +68,8 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         minYAxis = varList[4][0]
         maxYAxis = varList[4][1]
 
-    print "#########################################################"
-    print maxDistRanges
     if maxDistRanges is None:
         maxDistRanges = len(ntuple_files) * [0]
-        print "Using default y-axis range."
-    else:
-        print "Using custom y-axis range."
 
     # Get ntuples
     ntuples = []
@@ -122,10 +118,11 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         # Make dist histogram
         c1 = TCanvas("c1", "", 525, 500)
         c1.SetRightMargin(0.05)
-        c1.SetLeftMargin(0.05)
+        c1.SetLeftMargin(0.18)
+        c1.SetTopMargin(0.05)
         if distLogy is True:
-            recoHist.SetMinimum(0.00001)
-            passHist.SetMinimum(0.00001)
+            recoHist.SetMinimum(1)
+            passHist.SetMinimum(1)
             gPad.SetLogy()
         else:
             recoHist.SetMinimum(0)
@@ -140,15 +137,17 @@ def generateEffOrPercHist(varList, typeStrings, ntuple_files,
         passHist.GetYaxis().SetTitle("# of muons")
         passHist.GetYaxis().SetTitleOffset(1.6)
 
-        legend = TLegend(0.17, 0.72, 0.9, 0.92)
+        legend = TLegend(0.17, 0.86, 0.9, 0.92)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
 
         recoHist.SetLineColor(kRed)
+        recoHist.SetMarkerColor(kRed)
         if drawGenMus is True:
             recoHist.Draw("E1HIST")
             legend.AddEntry(recoHist, label[0], "LP")
         passHist.SetLineColor(kBlue)
+        passHist.SetMarkerColor(kBlue)
         passHist.Draw("E1HISTSAME")
         # legend.SetTextSize(0.0275)
         legend.AddEntry(passHist, label[1], "LP")
@@ -616,13 +615,14 @@ binningDict["phiFineRestr"] = [25, -0.2, 2]
 binningDict["ptFine"] = [100, 0, 200]
 binningDict["pt140Fine"] = [50, 0, 140]
 binningDict["pt80Fine"] = [50, 0, 80]
+binningDict["pt80"] = [20, 0, 80]
 binningDict["pt50Fine"] = [100, 0, 50]
 binningDict["pt25Fine"] = [100, 0, 25]
 binningDict["invMassFine"] = [40, 3, 3.2]
-binningDict["distVeryNarrow"] = [40, 0, 0.2]
-binningDict["distNarrow"] = [50, 0, 0.3]
+binningDict["distNarrow"] = [25, 0, 0.25]
 binningDict["distWide"] = [25, 0, 1]
 binningDict["distSym"] = [80, -1, 1]
+binningDict["distSymNarrow"] = [40, -0.5, 0.5]
 binningDict["distVeryWide"] = [15, 0, 15]
 binningDict["distWideFine"] = [100, 0, 1]
 
